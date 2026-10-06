@@ -269,36 +269,37 @@ body {
 }
 
 /* ==========================================================================
-   BREAKPOINTS DE RESPONSIVIDADE ADAPTADOS PARA ANDROID & TABLETS
-   ========================================================================= */
-
-/* Tablets / Androids Médios e Dobráveis (Abrupto até 900px) */
+   BREAKPOINT MOBILE / ANDROID (< 900px)
+   ========================================================================== */
 @media (max-width: 900px) {
+    /* Exibe o botão de hambúrguer */
     .btn-menu {
-        display: flex;
+        display: flex !important;
+        z-index: 1001; /* Garante que fique acima da barra */
     }
 
-    /* Menu Gaveta Deslizante para Mobile */
+    /* Menu Gaveta Deslizante */
     .nav-links {
         position: fixed;
-        top: var(--nav-height);
-        right: -100%;
+        top: 0;
+        right: -100%; /* Escondido fora da tela */
         width: 80%;
-        max-width: 320px;
-        height: calc(100vh - var(--nav-height));
-        background: rgba(16, 32, 70, 0.96);
-        backdrop-filter: blur(15px);
-        -webkit-backdrop-filter: blur(15px);
+        max-width: 300px;
+        height: 100vh;
+        background: #112248; /* Fundo azul escuro sólido para dar leitura perfeita */
         flex-direction: column;
         align-items: flex-start;
-        padding: 2.5rem 2rem;
-        gap: 1.2rem;
-        box-shadow: -5px 0 20px rgba(0, 0, 0, 0.4);
-        transition: right 0.3s ease-in-out;
+        justify-content: flex-start;
+        padding: 90px 2rem 2rem 2rem; /* Espaço no topo para não cobrir o topo */
+        gap: 1.5rem;
+        box-shadow: -5px 0 25px rgba(0, 0, 0, 0.7);
+        transition: right 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        z-index: 999;
     }
 
+    /* Quando ativado pelo JavaScript */
     .nav-links.active {
-        right: 0;
+        right: 0 !important; /* Faz o menu deslizar para dentro da tela */
     }
 
     .nav-links li {
@@ -308,8 +309,10 @@ body {
     .nav-links a {
         width: 100%;
         font-size: 1.2rem;
-        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-        padding-bottom: 10px;
+        color: #ffffff !important; /* Força letras brancas */
+        border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+        padding: 12px 0;
+        display: block;
     }
 
     .hero-section {
@@ -338,7 +341,6 @@ body {
         justify-content: center;
     }
 }
-
 /* Smartphones Android Compactos (< 480px) */
 @media (max-width: 480px) {
     :root {
