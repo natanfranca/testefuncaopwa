@@ -1,6 +1,5 @@
 const CACHE_NAME = "cuidado-puro-v1";
 
-// Paths relative to the service worker location (root of static)
 const ARQUIVOS_INICIAIS = [
   "./",
   "./index.html",
@@ -29,12 +28,18 @@ const ARQUIVOS_INICIAIS = [
   "./offline.html"
 ];
 
+// Instalação tolerante a arquivos ausentes ou erros de digitação de caminhos
 self.addEventListener("install", (evento) => {
   evento.waitUntil(
     caches.open(CACHE_NAME).then((cache) => {
-      return cache.addAll(ARQUIVOS_INICIAIS).catch((err) => {
-        console.warn("Alguns arquivos não entraram no cache:", err);
-      });
+      // Executa promessas individuais para que se um arquivo der erro 404, os outros ainda entrem no cache com sucesso
+      return Promise.all(
+        ARQUIVOS_INICIAIS.map((url) => {
+          return cache.add(url).catch((err) => {
+            console.error(`Falha ao colocar no cache o arquivo: ${url}`, err);
+          });
+        })
+      );
     })
   );
   self.skipWaiting();
@@ -57,18 +62,14 @@ self.addEventListener("fetch", (evento) => {
   const requisicao = evento.request;
   const url = new URL(requisicao.url);
 
-  // Não cacheia API / login / cadastro
+  // Ignora APIs e rotas de autenticação dinâmicas
   if (
     url.pathname.startsWith("/api/") ||
-    ["/Login", "/Clientes", "/Profissionais"].includes(url.pathname) ||
-    url.pathname.includes("/Login") ||
-    url.pathname.includes("/Clientes") ||
-    url.pathname.includes("/Profissionais")
+    ["/Login", "/Clientes", "/Profissionais"].some(rota => url.pathname.includes(rota))
   ) {
     return;
   }
 
-  // Network-first com fallback para cache (e página offline)
   evento.respondWith(
     fetch(requisicao)
       .then((resposta) => {
@@ -83,7 +84,6 @@ self.addEventListener("fetch", (evento) => {
       .catch(() => {
         return caches.match(requisicao).then((cached) => {
           if (cached) return cached;
-          // Fallback para navegação offline
           if (requisicao.mode === "navigate") {
             return caches.match("./offline.html") || caches.match("./index.html");
           }
