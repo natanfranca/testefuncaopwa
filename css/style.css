@@ -52,9 +52,7 @@ body {
 }
 
 .logo {
-    display: flex;
-    align-items: center;
-    gap: 12px;
+  margin-left: -38px;
 }
 
 .logo img {
