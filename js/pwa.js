@@ -18,3 +18,14 @@ if ("serviceWorker" in navigator) {
       });
   });
 }
+
+document.addEventListener('DOMContentLoaded', () => {
+  const btnMenu = document.getElementById('btn-menu');
+  const navLinks = document.querySelector('.nav-links');
+
+  if (btnMenu && navLinks) {
+    btnMenu.addEventListener('click', () => {
+      navLinks.classList.toggle('active');
+    });
+  }
+});
