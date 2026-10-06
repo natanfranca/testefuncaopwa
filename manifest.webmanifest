@@ -3,7 +3,7 @@
   "short_name": "Cuidado Puro",
   "description": "Plataforma para conectar pacientes e profissionais de cuidado domiciliar.",
   "lang": "pt-BR",
-  "start_url": "./",
+  "start_url": "index.html",
   "scope": "./",
   "display": "standalone",
   "background_color": "#ffffff",
