@@ -3,7 +3,7 @@
   "short_name": "Cuidado Puro",
   "description": "Plataforma para conectar pacientes e profissionais de cuidado domiciliar.",
   "lang": "pt-BR",
-  "start_url": "index.html",
+  "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
   "background_color": "#ffffff",
@@ -11,25 +11,25 @@
   "orientation": "any",
   "icons": [
     {
-      "src": "telas/img/pwa-icon-192.png",
+      "src": "./telas/img/pwa-icon-192.png",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "telas/img/pwa-icon-192.png",
+      "src": "./telas/img/pwa-icon-192.png",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "maskable"
     },
     {
-      "src": "telas/img/pwa-icon-512.png",
+      "src": "./telas/img/pwa-icon-512.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "telas/img/pwa-icon-512.png",
+      "src": "./telas/img/pwa-icon-512.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "maskable"
