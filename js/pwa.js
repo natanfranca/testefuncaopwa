@@ -1,25 +1,23 @@
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", () => {
-    // relative path works whether served at / or /static/
-    const swPath = new URL("service-worker.js", window.location.href).pathname;
-    // Prefer root-relative when possible
-    const registerPath = "/service-worker.js";
+    // Registra o Service Worker dinamicamente sem usar a barra '/' que quebra no GitHub Pages
+    const swUrl = new URL("../service-worker.js", import.meta.url || window.location.href).href;
+
     navigator.serviceWorker
-      .register(registerPath)
+      .register(swUrl)
       .then((registro) => {
-        console.log("PWA ativada:", registro.scope);
+        console.log("PWA ativada no escopo:", registro.scope);
       })
       .catch((erro) => {
-        // fallback relative
+        // Tenta fallback com caminho relativo direto
         navigator.serviceWorker
           .register("./service-worker.js")
-          .then((r) => console.log("PWA ativada (relativo):", r.scope))
           .catch((e) => console.error("Não foi possível registrar a PWA:", e));
       });
   });
 }
 
-// === CÓDIGO DO MENU MOBILE (Adicionar daqui para baixo) ===
+// === CÓDIGO DO MENU MOBILE ===
 document.addEventListener('DOMContentLoaded', () => {
   const btnMenu = document.getElementById('btn-menu');
   const navLinks = document.querySelector('.nav-links');
@@ -29,11 +27,7 @@ document.addEventListener('DOMContentLoaded', () => {
       e.stopPropagation();
       navLinks.classList.toggle('active');
       
-      if (navLinks.classList.contains('active')) {
-        btnMenu.textContent = '✕';
-      } else {
-        btnMenu.textContent = '☰';
-      }
+      btnMenu.textContent = navLinks.classList.contains('active') ? '✕' : '☰';
     });
 
     document.addEventListener('click', (e) => {
