@@ -30,7 +30,7 @@
     </div>
   </div>
 
-  <!-- App -->
+ <!-- App -->
   <div id="app" class="app hidden">
     <aside class="sidebar">
       <div class="sidebar-brand">
@@ -114,5 +114,231 @@
 
       <!-- AGENDA -->
       <section id="panel-agenda" class="panel">
+        <div class="panel-actions">
+          <button type="button" id="add-agenda" class="btn-primary">+ Novo agendamento</button>
+        </div>
+        <div id="agenda-list" class="list"></div>
+        <div id="agenda-form-wrap" class="card hidden">
+          <h3 id="agenda-form-title">Novo agendamento</h3>
+          <div class="form-grid">
+            <div>
+              <label>Data</label>
+              <input id="ag-date" type="date">
+            </div>
+            <div>
+              <label>Horário</label>
+              <input id="ag-time" type="time">
+            </div>
+            <div>
+              <label>Cuidador</label>
+              <input id="ag-caregiver" type="text" placeholder="Nome do cuidador">
+            </div>
+            <div>
+              <label>Tipo de cuidado</label>
+              <input id="ag-type" type="text" placeholder="Ex.: Acompanhamento, Curativo, Medicação...">
+            </div>
+            <div>
+              <label>Telefone</label>
+              <input id="ag-phone" type="tel" placeholder="WhatsApp">
+            </div>
+            <div class="full">
+              <label>Observações</label>
+              <textarea id="ag-notes" placeholder="Detalhes do atendimento..."></textarea>
+            </div>
+          </div>
+          <div class="panel-actions" style="margin-top:14px">
+            <button type="button" id="save-agenda" class="btn-primary">Salvar</button>
+            <button type="button" id="cancel-agenda" class="btn-secondary">Cancelar</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- FAVORITOS -->
+      <section id="panel-favorites" class="panel">
+        <div class="panel-actions">
+          <button type="button" id="add-favorite" class="btn-primary">+ Adicionar favorito</button>
+        </div>
+        <div id="favorites-list" class="list"></div>
+        <div id="favorite-form-wrap" class="card hidden">
+          <h3>Novo cuidador favorito</h3>
+          <div class="form-grid">
+            <div>
+              <label>Nome do cuidador</label>
+              <input id="fav-name" type="text" placeholder="Nome completo">
+            </div>
+            <div>
+              <label>Especialidade</label>
+              <input id="fav-specialty" type="text" placeholder="Ex.: Idosos, Pós-operatório...">
+            </div>
+            <div>
+              <label>Telefone</label>
+              <input id="fav-phone" type="tel" placeholder="WhatsApp">
+            </div>
+            <div>
+              <label>Cidade</label>
+              <input id="fav-city" type="text" placeholder="Cidade">
+            </div>
+            <div class="full">
+              <label>Observações</label>
+              <textarea id="fav-notes" placeholder="Por que é favorito, preferências..."></textarea>
+            </div>
+          </div>
+          <div class="panel-actions" style="margin-top:14px">
+            <button type="button" id="save-favorite" class="btn-primary">Salvar</button>
+            <button type="button" id="cancel-favorite" class="btn-secondary">Cancelar</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- HISTÓRICO -->
+      <section id="panel-history" class="panel">
+        <div class="panel-actions">
+          <button type="button" id="add-history" class="btn-primary">+ Registrar atendimento</button>
+        </div>
+        <div id="history-list" class="list"></div>
+        <div id="history-form-wrap" class="card hidden">
+          <h3>Registrar atendimento</h3>
+          <div class="form-grid">
+            <div>
+              <label>Cuidador</label>
+              <input id="hist-caregiver" type="text" placeholder="Nome do cuidador">
+            </div>
+            <div>
+              <label>Data</label>
+              <input id="hist-date" type="date">
+            </div>
+            <div>
+              <label>Tipo de cuidado</label>
+              <input id="hist-type" type="text" placeholder="Ex.: Plantão 12h, Visita...">
+            </div>
+            <div>
+              <label>Duração / valor</label>
+              <input id="hist-duration" type="text" placeholder="Ex.: 4h · R$ 200">
+            </div>
+            <div class="full">
+              <label>Observações</label>
+              <textarea id="hist-notes" placeholder="Como foi o atendimento..."></textarea>
+            </div>
+          </div>
+          <div class="panel-actions" style="margin-top:14px">
+            <button type="button" id="save-history" class="btn-primary">Salvar</button>
+            <button type="button" id="cancel-history" class="btn-secondary">Cancelar</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- MESSAGES -->
+      <section id="panel-messages" class="panel">
+        <div class="panel-actions">
+          <button type="button" id="clear-messages" class="btn-secondary">Limpar todas</button>
+        </div>
+        <div id="messages-list" class="list"></div>
+      </section>
+
+      <!-- REVIEWS -->
+      <section id="panel-reviews" class="panel">
+        <div class="panel-actions">
+          <button type="button" id="add-review" class="btn-primary">+ Nova avaliação</button>
+        </div>
+        <div id="reviews-list" class="list"></div>
+        <div id="review-form-wrap" class="card hidden">
+          <h3>Nova avaliação</h3>
+          <div class="form-grid">
+            <div>
+              <label>Cuidador</label>
+              <input id="rev-name" type="text" placeholder="Nome do cuidador">
+            </div>
+            <div>
+              <label>Nota (1–5)</label>
+              <input id="rev-rating" type="number" min="1" max="5" step="0.1" placeholder="4.9">
+            </div>
+            <div class="full">
+              <label>Comentário</label>
+              <textarea id="rev-text" placeholder="Como foi o atendimento..."></textarea>
+            </div>
+          </div>
+          <div class="panel-actions" style="margin-top:14px">
+            <button type="button" id="save-review" class="btn-primary">Salvar</button>
+            <button type="button" id="cancel-review" class="btn-secondary">Cancelar</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- PAYMENTS -->
+      <section id="panel-payments" class="panel">
+        <div class="panel-actions">
+          <button type="button" id="add-payment" class="btn-primary">+ Novo registro</button>
+        </div>
+        <div id="payments-list" class="list"></div>
+        <div id="payment-form-wrap" class="card hidden">
+          <h3>Novo pagamento</h3>
+          <div class="form-grid">
+            <div>
+              <label>Cuidador</label>
+              <input id="pay-caregiver" type="text" placeholder="Nome">
+            </div>
+            <div>
+              <label>Valor (R$)</label>
+              <input id="pay-value" type="number" min="0" step="0.01" placeholder="150.00">
+            </div>
+            <div>
+              <label>Data</label>
+              <input id="pay-date" type="date">
+            </div>
+            <div>
+              <label>Status</label>
+              <select id="pay-status">
+                <option value="pago">Pago</option>
+                <option value="pendente">Pendente</option>
+                <option value="atrasado">Atrasado</option>
+              </select>
+            </div>
+            <div class="full">
+              <label>Descrição</label>
+              <input id="pay-desc" type="text" placeholder="Ex.: Plantão 12h">
+            </div>
+          </div>
+          <div class="panel-actions" style="margin-top:14px">
+            <button type="button" id="save-payment" class="btn-primary">Salvar</button>
+            <button type="button" id="cancel-payment" class="btn-secondary">Cancelar</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- SETTINGS -->
+      <section id="panel-settings" class="panel">
+        <div class="card form-card">
+          <h3>Dados do paciente</h3>
+          <label>Nome</label>
+          <input id="s-name" type="text" placeholder="Ana Lúcia">
+          <label>Telefone (WhatsApp)</label>
+          <input id="s-phone" type="text" placeholder="(00) 00000-0000">
+          <label>E-mail</label>
+          <input id="s-email" type="email" placeholder="contato@email.com">
+          <label>Cidade / região</label>
+          <input id="s-city" type="text" placeholder="São Paulo, SP">
+          <button type="button" id="save-settings" class="btn-primary">Salvar</button>
+          <p id="settings-saved" class="success-msg"></p>
+        </div>
+        <div class="card form-card">
+          <h3>Exportar / Importar dados</h3>
+          <p class="hint">Baixe um JSON com tudo salvo neste navegador, ou importe um arquivo.</p>
+          <div class="row-actions">
+            <button type="button" id="export-data" class="btn-secondary">Exportar JSON</button>
+            <label class="btn-secondary file-btn">
+              Importar JSON
+              <input type="file" id="import-data" accept="application/json" hidden>
+            </label>
+          </div>
+          <p id="import-msg" class="success-msg"></p>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <script src="../js/dashboardPacienteApp.js"></script>
+    <script src="/js/pwa.js"></script>
+</body>
+</html>
         <div class="panel-actions">
           <button type="button" id="add-agenda" class="btn-primary">+ Novo ag
