@@ -1,12 +1,84 @@
 /**
- * Dashboard Cuidado Puro — Conectado com servidor em localhost
+ * Dashboard Cuidado Puro — Versão de Demonstração (GitHub Pages / localStorage)
  */
+const STORAGE = {
+  auth: "cp_auth",
+  agenda: "cp_agenda",
+  requests: "cp_requests",
+  patients: "cp_patients",
+  messages: "cp_messages",
+  reviews: "cp_reviews",
+  payments: "cp_payments",
+  settings: "cp_settings"
+};
 
-// Endereço do teu servidor local (ajuste a porta conforme o teu back-end, ex: 3000, 5000, 8000)
-const API_URL = "http://localhost:3000/api";
+const DEFAULT_PASSWORD = "cuidado123";
 
-function getToken() {
-  return localStorage.getItem("cp_token");
+const DEFAULT_SETTINGS = {
+  name: "Mariana Silva",
+  phone: "",
+  email: "",
+  focus: "Cuidados domiciliares"
+};
+
+const DEFAULT_AGENDA = [
+  { id: "a1", date: nextDay(1), time: "09:00", patient: "Ana Lúcia", type: "Acompanhamento matinal", phone: "", notes: "", createdAt: new Date().toISOString() },
+  { id: "a2", date: nextDay(2), time: "14:30", patient: "Carlos Mendes", type: "Medicação e curativo", phone: "", notes: "", createdAt: new Date().toISOString() }
+];
+
+const DEFAULT_REQUESTS = [
+  { id: "r1", name: "Ana Lúcia", phone: "", text: "Preciso de acompanhamento 3x na semana.", status: "pendente", createdAt: new Date().toISOString() },
+  { id: "r2", name: "Carlos", phone: "", text: "Solicito cuidador para finais de semana.", status: "pendente", createdAt: new Date().toISOString() }
+];
+
+const DEFAULT_PATIENTS = [
+  { id: "p1", name: "Ana Lúcia", age: 78, phone: "", city: "", notes: "Hipertensão controlada", createdAt: new Date().toISOString() },
+  { id: "p2", name: "Carlos Mendes", age: 65, phone: "", city: "", notes: "Pós-operatório", createdAt: new Date().toISOString() }
+];
+
+const DEFAULT_REVIEWS = [
+  { id: "v1", name: "Família Ana Lúcia", rating: 5, text: "Atendimento atencioso e pontual.", createdAt: new Date().toISOString() },
+  { id: "v2", name: "Carlos Mendes", rating: 4.8, text: "Muito profissional e cuidadosa.", createdAt: new Date().toISOString() }
+];
+
+function nextDay(n) {
+  const d = new Date();
+  d.setDate(d.getDate() + n);
+  return d.toISOString().slice(0, 10);
+}
+
+function read(key, fallback) {
+  try {
+    const raw = localStorage.getItem(key);
+    if (!raw) return structuredClone(fallback);
+    return JSON.parse(raw);
+  } catch {
+    return structuredClone(fallback);
+  }
+}
+
+function write(key, value) {
+  localStorage.setItem(key, JSON.stringify(value));
+}
+
+function uid(prefix) {
+  return prefix + "_" + Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
+}
+
+function ensureDefaults() {
+  if (!localStorage.getItem(STORAGE.agenda)) write(STORAGE.agenda, DEFAULT_AGENDA);
+  if (!localStorage.getItem(STORAGE.requests)) write(STORAGE.requests, DEFAULT_REQUESTS);
+  if (!localStorage.getItem(STORAGE.patients)) write(STORAGE.patients, DEFAULT_PATIENTS);
+  if (!localStorage.getItem(STORAGE.messages)) write(STORAGE.messages, [
+    { id: "m1", name: "Família Oliveira", phone: "(11) 98888-0001", email: "", message: "Podemos remarcar a visita de quinta?", createdAt: new Date().toISOString(), read: false },
+    { id: "m2", name: "Carlos Mendes", phone: "", email: "carlos@email.com", message: "Obrigado pelo atendimento de ontem.", createdAt: new Date().toISOString(), read: true }
+  ]);
+  if (!localStorage.getItem(STORAGE.reviews)) write(STORAGE.reviews, DEFAULT_REVIEWS);
+  if (!localStorage.getItem(STORAGE.payments)) write(STORAGE.payments, [
+    { id: "pay1", patient: "Ana Lúcia", value: 280, date: new Date().toISOString().slice(0,10), status: "pago", desc: "Plantão 12h", createdAt: new Date().toISOString() },
+    { id: "pay2", patient: "Carlos Mendes", value: 150, date: new Date().toISOString().slice(0,10), status: "pendente", desc: "Visita domiciliar", createdAt: new Date().toISOString() }
+  ]);
+  if (!localStorage.getItem(STORAGE.settings)) write(STORAGE.settings, DEFAULT_SETTINGS);
 }
 
 function escapeHtml(s) {
@@ -24,9 +96,9 @@ function formatDate(iso) {
   return d.toLocaleDateString("pt-BR", { day: "2-digit", month: "short", year: "numeric" });
 }
 
-/* ---------- Autenticação (Login/Logout) ---------- */
+/* ---------- Login & Logout ---------- */
 function isLoggedIn() {
-  return !!getToken();
+  return localStorage.getItem(STORAGE.auth) === "1";
 }
 
 function showApp(show) {
@@ -46,7 +118,7 @@ function showApp(show) {
   }
 }
 
-async function login(e) {
+function login(e) {
   if (e) e.preventDefault();
   
   const passEl = document.getElementById("login-pass");
@@ -54,30 +126,17 @@ async function login(e) {
   if (!passEl) return;
   
   const pass = passEl.value.trim();
-
-  try {
-    const res = await fetch(`${API_URL}/login`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ password: pass })
-    });
-
-    const data = await res.json();
-
-    if (res.ok) {
-      localStorage.setItem("cp_token", data.token);
-      if (err) err.textContent = "";
-      showApp(true);
-    } else {
-      if (err) err.textContent = data.message || "Senha incorreta.";
-    }
-  } catch (error) {
-    if (err) err.textContent = "Erro ao conectar com o servidor localhost.";
+  if (pass === DEFAULT_PASSWORD) {
+    localStorage.setItem(STORAGE.auth, "1");
+    if (err) err.textContent = "";
+    showApp(true);
+  } else {
+    if (err) err.textContent = "Senha incorreta. Tente 'cuidado123'.";
   }
 }
 
 function logout() {
-  localStorage.removeItem("cp_token");
+  localStorage.removeItem(STORAGE.auth);
   showApp(false);
 }
 
@@ -96,60 +155,100 @@ function switchPanel(panel) {
   refreshIcons();
 }
 
-/* ---------- Visão Geral (Overview) ---------- */
-async function renderOverview() {
-  try {
-    const res = await fetch(`${API_URL}/overview`, {
-      headers: { "Authorization": `Bearer ${getToken()}` }
-    });
-    const data = await res.json();
+/* ---------- Visão Geral ---------- */
+function renderOverview() {
+  const agenda = read(STORAGE.agenda, []);
+  const requests = read(STORAGE.requests, []);
+  const patients = read(STORAGE.patients, []);
+  const messages = read(STORAGE.messages, []);
+  const reviews = read(STORAGE.reviews, []);
 
-    document.getElementById("stat-agenda").textContent = data.agendaCount || 0;
-    document.getElementById("stat-requests").textContent = data.requestsCount || 0;
-    document.getElementById("stat-patients").textContent = data.patientsCount || 0;
-    document.getElementById("stat-rating").textContent = data.ratingAvg || "—";
-  } catch (err) {
-    console.error("Erro ao carregar indicadores:", err);
+  const stAgenda = document.getElementById("stat-agenda");
+  const stRequests = document.getElementById("stat-requests");
+  const stPatients = document.getElementById("stat-patients");
+  const stRating = document.getElementById("stat-rating");
+
+  if (stAgenda) stAgenda.textContent = agenda.length;
+  if (stRequests) stRequests.textContent = requests.filter((r) => r.status === "pendente").length;
+  if (stPatients) stPatients.textContent = patients.length;
+
+  if (stRating) {
+    if (reviews.length) {
+      const avg = reviews.reduce((s, r) => s + Number(r.rating || 0), 0) / reviews.length;
+      stRating.textContent = avg.toFixed(1).replace(".", ",");
+    } else {
+      stRating.textContent = "—";
+    }
+  }
+
+  const boxA = document.getElementById("overview-agenda");
+  if (boxA) {
+    const sorted = agenda.slice().sort((a, b) => ((a.date || "") + (a.time || "")).localeCompare((b.date || "") + (b.time || ""))).slice(0, 5);
+    boxA.innerHTML = !sorted.length ? '<p class="empty">Nada na agenda.</p>' : sorted.map((a) => `
+      <div class="msg-item">
+        <div class="msg-meta"><span>${escapeHtml([a.date, a.time].filter(Boolean).join(" · "))}</span></div>
+        <h4>${escapeHtml(a.patient || "Paciente")} — ${escapeHtml(a.type || "Cuidado")}</h4>
+        <p>${escapeHtml(a.notes || "")}</p>
+      </div>`).join("");
+  }
+
+  const boxR = document.getElementById("overview-requests");
+  if (boxR) {
+    const recentReq = requests.slice(0, 5);
+    boxR.innerHTML = !recentReq.length ? '<p class="empty">Nenhuma solicitação.</p>' : recentReq.map((r) => `
+      <div class="msg-item ${r.status === "pendente" ? "pending" : ""}">
+        <div class="msg-meta">
+          <span>${escapeHtml(r.name || "")}${r.phone ? " · " + escapeHtml(r.phone) : ""}</span>
+          <span>${escapeHtml(r.status || "pendente")}</span>
+        </div>
+        <p>${escapeHtml(r.text || "")}</p>
+      </div>`).join("");
+  }
+
+  const boxM = document.getElementById("overview-messages");
+  if (boxM) {
+    const latest = messages.slice(0, 5);
+    boxM.innerHTML = !latest.length ? '<p class="empty">Nenhuma mensagem.</p>' : latest.map((m) => `
+      <div class="msg-item ${m.read ? "" : "unread"}">
+        <div class="msg-meta">
+          <span>${escapeHtml(m.name || "Sem nome")}${m.phone ? " · " + escapeHtml(m.phone) : ""}</span>
+          <span>${formatDate(m.createdAt)}</span>
+        </div>
+        <p>${escapeHtml((m.message || "").slice(0, 140))}</p>
+      </div>`).join("");
   }
 }
 
 /* ---------- Agenda ---------- */
-let editingAgendaId = null;
-
-async function renderAgenda() {
+function renderAgenda() {
+  const list = read(STORAGE.agenda, []);
   const box = document.getElementById("agenda-list");
   if (!box) return;
-
-  try {
-    const res = await fetch(`${API_URL}/agenda`, {
-      headers: { "Authorization": `Bearer ${getToken()}` }
-    });
-    const list = await res.json();
-
-    if (!list.length) {
-      box.innerHTML = '<p class="empty">Nenhum agendamento na agenda.</p>';
-      return;
-    }
-
-    box.innerHTML = list.map((a) => `
-      <div class="msg-item" data-id="${a.id}">
-        <div class="msg-meta"><span>${escapeHtml(a.date)} · ${escapeHtml(a.time)}</span></div>
-        <h4>${escapeHtml(a.patient)} — ${escapeHtml(a.type)}</h4>
-        <p>${escapeHtml(a.notes || "")} ${a.phone ? "· " + escapeHtml(a.phone) : ""}</p>
-        <div class="msg-actions">
-          <button type="button" class="btn-secondary" onclick="editAgenda('${a.id}')">Editar</button>
-          <button type="button" class="btn-danger" onclick="deleteAgenda('${a.id}')">Excluir</button>
-        </div>
-      </div>
-    `).join("");
-  } catch (err) {
-    box.innerHTML = '<p class="empty">Erro ao carregar agenda de localhost.</p>';
+  if (!list.length) {
+    box.innerHTML = '<p class="empty">Nenhum agendamento.</p>';
+    return;
   }
+  box.innerHTML = list.map((a) => `
+    <div class="msg-item" data-id="${a.id}">
+      <div class="msg-meta"><span>${escapeHtml([a.date, a.time].filter(Boolean).join(" · "))}</span></div>
+      <h4>${escapeHtml(a.patient || "Paciente")} — ${escapeHtml(a.type || "Cuidado")}</h4>
+      <p>${escapeHtml(a.notes || "")}</p>
+      <div class="msg-actions">
+        <button type="button" class="btn-danger" data-action="delete">Excluir</button>
+      </div>
+    </div>`).join("");
+
+  box.querySelectorAll("[data-action=delete]").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const id = btn.closest(".msg-item").dataset.id;
+      write(STORAGE.agenda, list.filter((x) => x.id !== id));
+      renderAgenda();
+      renderOverview();
+    });
+  });
 }
 
 function openAgendaForm() {
-  editingAgendaId = null;
-  document.getElementById("agenda-form-title").textContent = "Novo agendamento";
   ["ag-date", "ag-time", "ag-patient", "ag-type", "ag-phone", "ag-notes"].forEach((id) => {
     const el = document.getElementById(id);
     if (el) el.value = "";
@@ -157,75 +256,54 @@ function openAgendaForm() {
   document.getElementById("agenda-form-wrap").classList.remove("hidden");
 }
 
-async function saveAgenda() {
-  const payload = {
+function saveAgenda() {
+  const list = read(STORAGE.agenda, []);
+  list.unshift({
+    id: uid("a"),
     date: document.getElementById("ag-date").value,
     time: document.getElementById("ag-time").value,
     patient: document.getElementById("ag-patient").value.trim(),
     type: document.getElementById("ag-type").value.trim(),
     phone: document.getElementById("ag-phone").value.trim(),
-    notes: document.getElementById("ag-notes").value.trim()
-  };
-
-  const url = editingAgendaId ? `${API_URL}/agenda/${editingAgendaId}` : `${API_URL}/agenda`;
-  const method = editingAgendaId ? "PUT" : "POST";
-
-  await fetch(url, {
-    method: method,
-    headers: {
-      "Authorization": `Bearer ${getToken()}`,
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify(payload)
+    notes: document.getElementById("ag-notes").value.trim(),
+    createdAt: new Date().toISOString()
   });
-
+  write(STORAGE.agenda, list);
   document.getElementById("agenda-form-wrap").classList.add("hidden");
   renderAgenda();
   renderOverview();
 }
 
-async function deleteAgenda(id) {
-  if (!confirm("Deseja realmente excluir este agendamento?")) return;
-  await fetch(`${API_URL}/agenda/${id}`, {
-    method: "DELETE",
-    headers: { "Authorization": `Bearer ${getToken()}` }
-  });
-  renderAgenda();
-  renderOverview();
-}
-
 /* ---------- Pacientes ---------- */
-async function renderPatients() {
+function renderPatients() {
+  const list = read(STORAGE.patients, []);
   const box = document.getElementById("patients-list");
   if (!box) return;
-
-  try {
-    const res = await fetch(`${API_URL}/patients`, {
-      headers: { "Authorization": `Bearer ${getToken()}` }
-    });
-    const list = await res.json();
-
-    if (!list.length) {
-      box.innerHTML = '<p class="empty">Nenhum paciente cadastrado.</p>';
-      return;
-    }
-
-    box.innerHTML = list.map((p) => `
-      <div class="msg-item" data-id="${p.id}">
-        <div class="msg-meta">
-          <span>${p.age ? p.age + " anos" : ""}${p.city ? " · " + escapeHtml(p.city) : ""}</span>
-          <span>${escapeHtml(p.phone || "")}</span>
-        </div>
-        <h4>${escapeHtml(p.name)}</h4>
-        <p>${escapeHtml(p.notes || "")}</p>
-        <div class="msg-actions">
-          <button type="button" class="btn-danger" onclick="deletePatient('${p.id}')">Excluir</button>
-        </div>
-      </div>
-    `).join("");
-  } catch (err) {
-    box.innerHTML = '<p class="empty">Erro ao carregar pacientes.</p>';
+  if (!list.length) {
+    box.innerHTML = '<p class="empty">Nenhum paciente cadastrado.</p>';
+    return;
   }
+  box.innerHTML = list.map((p) => `
+    <div class="msg-item" data-id="${p.id}">
+      <div class="msg-meta">
+        <span>${p.age ? String(p.age) + " anos" : ""}${p.city ? " · " + escapeHtml(p.city) : ""}</span>
+        <span>${escapeHtml(p.phone || "")}</span>
+      </div>
+      <h4>${escapeHtml(p.name || "Paciente")}</h4>
+      <p>${escapeHtml(p.notes || "")}</p>
+      <div class="msg-actions">
+        <button type="button" class="btn-danger" data-action="delete">Excluir</button>
+      </div>
+    </div>`).join("");
+
+  box.querySelectorAll("[data-action=delete]").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const id = btn.closest(".msg-item").dataset.id;
+      write(STORAGE.patients, list.filter((x) => x.id !== id));
+      renderPatients();
+      renderOverview();
+    });
+  });
 }
 
 function openPatientForm() {
@@ -236,40 +314,24 @@ function openPatientForm() {
   document.getElementById("patient-form-wrap").classList.remove("hidden");
 }
 
-async function savePatient() {
-  const payload = {
+function savePatient() {
+  const list = read(STORAGE.patients, []);
+  list.unshift({
+    id: uid("p"),
     name: document.getElementById("pat-name").value.trim(),
-    age: Number(document.getElementById("pat-age").value) || null,
+    age: Number(document.getElementById("pat-age").value) || "",
     phone: document.getElementById("pat-phone").value.trim(),
     city: document.getElementById("pat-city").value.trim(),
-    notes: document.getElementById("pat-notes").value.trim()
-  };
-
-  await fetch(`${API_URL}/patients`, {
-    method: "POST",
-    headers: {
-      "Authorization": `Bearer ${getToken()}`,
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify(payload)
+    notes: document.getElementById("pat-notes").value.trim(),
+    createdAt: new Date().toISOString()
   });
-
+  write(STORAGE.patients, list);
   document.getElementById("patient-form-wrap").classList.add("hidden");
   renderPatients();
   renderOverview();
 }
 
-async function deletePatient(id) {
-  if (!confirm("Excluir paciente?")) return;
-  await fetch(`${API_URL}/patients/${id}`, {
-    method: "DELETE",
-    headers: { "Authorization": `Bearer ${getToken()}` }
-  });
-  renderPatients();
-  renderOverview();
-}
-
-/* ---------- Ícones & Inicialização ---------- */
+/* ---------- Render & Inicialização ---------- */
 function refreshIcons() {
   if (window.lucide && typeof lucide.createIcons === "function") lucide.createIcons();
 }
@@ -282,6 +344,8 @@ function refreshAll() {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
+  ensureDefaults();
+
   // Login
   const loginBtn = document.getElementById("login-btn");
   if (loginBtn) loginBtn.addEventListener("click", login);
@@ -296,12 +360,12 @@ document.addEventListener("DOMContentLoaded", () => {
   const logoutBtn = document.getElementById("logout-btn");
   if (logoutBtn) logoutBtn.addEventListener("click", logout);
 
-  // Navegação do Menu
+  // Navegação
   document.querySelectorAll(".nav-item").forEach((btn) => {
     btn.addEventListener("click", () => switchPanel(btn.dataset.panel));
   });
 
-  // Eventos de Formulários
+  // Formulários
   const addAg = document.getElementById("add-agenda");
   if (addAg) addAg.addEventListener("click", openAgendaForm);
   const saveAg = document.getElementById("save-agenda");
@@ -320,7 +384,6 @@ document.addEventListener("DOMContentLoaded", () => {
     document.getElementById("patient-form-wrap").classList.add("hidden");
   });
 
-  // Checa autenticação inicial
   if (isLoggedIn()) showApp(true);
   else showApp(false);
 
