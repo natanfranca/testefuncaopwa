@@ -1,18 +1,17 @@
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", () => {
-    // Registra o Service Worker dinamicamente sem usar a barra '/' que quebra no GitHub Pages
-    const swUrl = new URL("../service-worker.js", import.meta.url || window.location.href).href;
-
+    // Registra o Service Worker buscando a partir da raiz do repositório
     navigator.serviceWorker
-      .register(swUrl)
+      .register("./service-worker.js")
       .then((registro) => {
         console.log("PWA ativada no escopo:", registro.scope);
       })
-      .catch((erro) => {
-        // Tenta fallback com caminho relativo direto
+      .catch(() => {
+        // Fallback caso esteja em uma subpasta (como /telas/)
         navigator.serviceWorker
-          .register("./service-worker.js")
-          .catch((e) => console.error("Não foi possível registrar a PWA:", e));
+          .register("../service-worker.js")
+          .then((registro) => console.log("PWA ativada (subpasta):", registro.scope))
+          .catch((erro) => console.error("Não foi possível registrar a PWA:", erro));
       });
   });
 }
@@ -26,7 +25,6 @@ document.addEventListener('DOMContentLoaded', () => {
     btnMenu.addEventListener('click', (e) => {
       e.stopPropagation();
       navLinks.classList.toggle('active');
-      
       btnMenu.textContent = navLinks.classList.contains('active') ? '✕' : '☰';
     });
 
