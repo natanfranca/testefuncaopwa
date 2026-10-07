@@ -128,7 +128,9 @@ function showApp(show) {
   }
 }
 
-function login() {
+function login(e) {
+  if (e) e.preventDefault();
+  
   const passEl = document.getElementById("login-pass");
   const err = document.getElementById("login-error");
   if (!passEl) return;
@@ -233,7 +235,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const passInput = document.getElementById("login-pass");
   if (passInput) {
     passInput.addEventListener("keydown", (e) => {
-      if (e.key === "Enter") login();
+      if (e.key === "Enter") login(e);
     });
   }
 
@@ -250,7 +252,10 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
- // Sempre inicia na tela de login para testes
-  showApp(false);
+  // Inicia checando o login (ou forçando a tela inicial de login)
+  if (isLoggedIn()) {
+    showApp(true);
+  } else {
+    showApp(false);
   }
 });
