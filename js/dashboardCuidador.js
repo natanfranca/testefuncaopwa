@@ -123,18 +123,36 @@ function login(e) {
   
   const passEl = document.getElementById("login-pass");
   const err = document.getElementById("login-error");
-  if (!passEl) return;
+  
+  if (!passEl) {
+    alert("Erro: O campo de senha não foi encontrado no HTML!");
+    return;
+  }
   
   const pass = passEl.value.trim();
-  if (pass === DEFAULT_PASSWORD) {
-    localStorage.setItem(STORAGE.auth, "1");
-    if (err) err.textContent = "";
-    showApp(true);
+  
+  if (pass === "cuidado123") {
+    localStorage.setItem("cp_auth", "1");
+    
+    // Esconde a tela de login e exibe o painel
+    document.getElementById("login-screen").classList.add("hidden");
+    document.getElementById("login-screen").style.display = "none";
+    
+    const app = document.getElementById("app");
+    app.classList.remove("hidden");
+    app.style.display = "flex";
   } else {
-    if (err) err.textContent = "Senha incorreta. Tente 'cuidado123'.";
+    if (err) err.textContent = "Senha incorreta. Use: cuidado123";
   }
 }
 
+// Vincula o evento de clique assim que o DOM carregar
+document.addEventListener("DOMContentLoaded", () => {
+  const loginBtn = document.getElementById("login-btn");
+  if (loginBtn) {
+    loginBtn.onclick = login;
+  }
+});
 function logout() {
   localStorage.removeItem(STORAGE.auth);
   showApp(false);
