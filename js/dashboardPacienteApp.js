@@ -250,10 +250,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
-  // Verificar sessão ativa
-  if (isLoggedIn()) {
-    showApp(true);
-  } else {
-    showApp(false);
+ // Sempre inicia na tela de login para testes
+  showApp(false);
   }
 });
