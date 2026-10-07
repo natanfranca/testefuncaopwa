@@ -12,7 +12,8 @@ const STORAGE = {
   settings: "cp_patient_settings"
 };
 
-const DEFAULT_PASSWORD = "cuidado123";
+// Aceita tanto a senha de paciente quanto a de admin para facilidade
+const VALID_PASSWORDS = ["cuidado123", "admin123"];
 
 const DEFAULT_SETTINGS = {
   name: "Ana Lúcia",
@@ -103,20 +104,37 @@ function isLoggedIn() {
 }
 
 function showApp(show) {
-  document.getElementById("login-screen").classList.toggle("hidden", show);
-  document.getElementById("app").classList.toggle("hidden", !show);
-  if (show) refreshAll();
+  const loginScreen = document.getElementById("login-screen");
+  const appScreen = document.getElementById("app");
+  
+  if (loginScreen && appScreen) {
+    if (show) {
+      loginScreen.style.display = "none";
+      appScreen.style.display = "flex";
+      loginScreen.classList.add("hidden");
+      appScreen.classList.remove("hidden");
+      refreshAll();
+    } else {
+      loginScreen.style.display = "flex";
+      appScreen.style.display = "none";
+      loginScreen.classList.remove("hidden");
+      appScreen.classList.add("hidden");
+    }
+  }
 }
 
 function login() {
-  const pass = document.getElementById("login-pass").value;
+  const passEl = document.getElementById("login-pass");
   const err = document.getElementById("login-error");
-  if (pass === DEFAULT_PASSWORD) {
+  if (!passEl) return;
+  
+  const pass = passEl.value.trim();
+  if (VALID_PASSWORDS.includes(pass)) {
     localStorage.setItem(STORAGE.auth, "1");
-    err.textContent = "";
+    if (err) err.textContent = "";
     showApp(true);
   } else {
-    err.textContent = "Senha incorreta.";
+    if (err) err.textContent = "Senha incorreta. Tente 'cuidado123' ou 'admin123'.";
   }
 }
 
@@ -135,7 +153,8 @@ function switchPanel(panel) {
   });
   const active = document.querySelector('.nav-item[data-panel="' + panel + '"]');
   if (active) {
-    document.getElementById("panel-title").textContent = active.dataset.label || panel;
+    const titleEl = document.getElementById("panel-title");
+    if (titleEl) titleEl.textContent = active.dataset.label || panel;
   }
   refreshIcons();
 }
@@ -147,65 +166,78 @@ function renderOverview() {
   const history = read(STORAGE.history, []);
   const reviews = read(STORAGE.reviews, []);
 
-  document.getElementById("stat-agenda").textContent = agenda.length;
-  document.getElementById("stat-favorites").textContent = favorites.length;
-  document.getElementById("stat-history").textContent = history.length;
+  const stAgenda = document.getElementById("stat-agenda");
+  const stFav = document.getElementById("stat-favorites");
+  const stHist = document.getElementById("stat-history");
+  const stRating = document.getElementById("stat-rating");
 
-  if (reviews.length) {
-    const avg = reviews.reduce((s, r) => s + Number(r.rating || 0), 0) / reviews.length;
-    document.getElementById("stat-rating").textContent = avg.toFixed(1).replace(".", ",");
-  } else {
-    document.getElementById("stat-rating").textContent = "—";
+  if (stAgenda) stAgenda.textContent = agenda.length;
+  if (stFav) stFav.textContent = favorites.length;
+  if (stHist) stHist.textContent = history.length;
+
+  if (stRating) {
+    if (reviews.length) {
+      const avg = reviews.reduce((s, r) => s + Number(r.rating || 0), 0) / reviews.length;
+      stRating.textContent = avg.toFixed(1).replace(".", ",");
+    } else {
+      stRating.textContent = "—";
+    }
   }
 
   // Agenda preview
   const boxA = document.getElementById("overview-agenda");
-  const sorted = agenda.slice().sort((a, b) => ((a.date || "") + (a.time || "")).localeCompare((b.date || "") + (b.time || ""))).slice(0, 5);
-  if (!sorted.length) {
-    boxA.innerHTML = '<p class="empty">Nada na agenda.</p>';
-  } else {
-    boxA.innerHTML = sorted.map((a) => {
-      const when = [a.date, a.time].filter(Boolean).join(" · ");
-      return `<div class="msg-item">
-        <div class="msg-meta"><span>${escapeHtml(when)}</span></div>
-        <h4>${escapeHtml(a.caregiver || "Cuidador")} — ${escapeHtml(a.type || "Cuidado")}</h4>
-        <p>${escapeHtml(a.notes || "")}</p>
-      </div>`;
-    }).join("");
+  if (boxA) {
+    const sorted = agenda.slice().sort((a, b) => ((a.date || "") + (a.time || "")).localeCompare((b.date || "") + (b.time || ""))).slice(0, 5);
+    if (!sorted.length) {
+      boxA.innerHTML = '<p class="empty">Nada na agenda.</p>';
+    } else {
+      boxA.innerHTML = sorted.map((a) => {
+        const when = [a.date, a.time].filter(Boolean).join(" · ");
+        return `<div class="msg-item">
+          <div class="msg-meta"><span>${escapeHtml(when)}</span></div>
+          <h4>${escapeHtml(a.caregiver || "Cuidador")} — ${escapeHtml(a.type || "Cuidado")}</h4>
+          <p>${escapeHtml(a.notes || "")}</p>
+        </div>`;
+      }).join("");
+    }
   }
 
   // Favorites preview
   const boxF = document.getElementById("overview-favorites");
-  const recentFav = favorites.slice(0, 5);
-  if (!recentFav.length) {
-    boxF.innerHTML = '<p class="empty">Nenhum favorito ainda.</p>';
-  } else {
-    boxF.innerHTML = recentFav.map((f) => `
-      <div class="msg-item">
-        <div class="msg-meta">
-          <span>${escapeHtml(f.specialty || "")}</span>
-          <span>${escapeHtml(f.city || "")}</span>
-        </div>
-        <h4>${escapeHtml(f.name || "Cuidador")}</h4>
-        <p>${escapeHtml(f.notes || "")}</p>
-      </div>`).join("");
+  if (boxF) {
+    const recentFav = favorites.slice(0, 5);
+    if (!recentFav.length) {
+      boxF.innerHTML = '<p class="empty">Nenhum favorito ainda.</p>';
+    } else {
+      boxF.innerHTML = recentFav.map((f) => `
+        <div class="msg-item">
+          <div class="msg-meta">
+            <span>${escapeHtml(f.specialty || "")}</span>
+            <span>${escapeHtml(f.city || "")}</span>
+          </div>
+          <h4>${escapeHtml(f.name || "Cuidador")}</h4>
+          <p>${escapeHtml(f.notes || "")}</p>
+        </div>`).join("");
+    }
   }
 
   // History preview
   const boxH = document.getElementById("overview-history");
-  const recentHist = history.slice().sort((a, b) => (b.date || "").localeCompare(a.date || "")).slice(0, 5);
-  if (!recentHist.length) {
-    boxH.innerHTML = '<p class="empty">Nenhum atendimento registrado.</p>';
-  } else {
-    boxH.innerHTML = recentHist.map((h) => `
-      <div class="msg-item">
-        <div class="msg-meta">
-          <span>${formatDate(h.date)}</span>
-          <span>${escapeHtml(h.duration || "")}</span>
-        </div>
-        <h4>${escapeHtml(h.caregiver || "Cuidador")} — ${escapeHtml(h.type || "Atendimento")}</h4>
-        <p>${escapeHtml(h.notes || "")}</p>
-      </div>`).join("");
+  if (boxH) {
+    const recentHist = history.slice().sort((a, b) => (b.date || "").localeCompare(a.date || "")).slice(0, 5);
+    if (!recentHist.length) {
+      boxH.innerHTML = '<p class="empty">Nenhum atendimento registrado.</p>';
+    } else {
+      boxH.innerHTML = recentHist.map((h) => `
+        <div class="msg-item">
+          <div class="msg-meta">
+            <span>${formatDate(h.date)}</span>
+            <span>${escapeHtml(h.duration || "")}</span>
+          </div>
+          <h4>${escapeHtml(h.caregiver || "Cuidador")} — ${escapeHtml(h.type || "Atendimento")}</h4>
+          <p>${escapeHtml(h.notes || "")}</p>
+        </div>`).join("");
+    }
   }
 }
 
@@ -215,6 +247,7 @@ let editingAgendaId = null;
 function renderAgenda() {
   const list = read(STORAGE.agenda, []);
   const box = document.getElementById("agenda-list");
+  if (!box) return;
   if (!list.length) {
     box.innerHTML = '<p class="empty">Nenhum agendamento. Clique em “+ Novo agendamento”.</p>';
     return;
@@ -299,6 +332,7 @@ let editingFavoriteId = null;
 function renderFavorites() {
   const list = read(STORAGE.favorites, []);
   const box = document.getElementById("favorites-list");
+  if (!box) return;
   if (!list.length) {
     box.innerHTML = '<p class="empty">Nenhum cuidador favorito. Clique em “+ Adicionar favorito”.</p>';
     return;
@@ -378,6 +412,7 @@ let editingHistoryId = null;
 function renderHistory() {
   const list = read(STORAGE.history, []);
   const box = document.getElementById("history-list");
+  if (!box) return;
   if (!list.length) {
     box.innerHTML = '<p class="empty">Nenhum atendimento no histórico. Clique em “+ Registrar atendimento”.</p>';
     return;
@@ -456,6 +491,7 @@ function saveHistory() {
 function renderMessages() {
   const list = read(STORAGE.messages, []);
   const box = document.getElementById("messages-list");
+  if (!box) return;
   if (!list.length) {
     box.innerHTML = '<p class="empty">Nenhuma mensagem.</p>';
     return;
@@ -496,6 +532,7 @@ let editingReviewId = null;
 function renderReviews() {
   const list = read(STORAGE.reviews, []);
   const box = document.getElementById("reviews-list");
+  if (!box) return;
   if (!list.length) {
     box.innerHTML = '<p class="empty">Nenhuma avaliação. Clique em “+ Nova avaliação”.</p>';
     return;
@@ -568,6 +605,7 @@ let editingPaymentId = null;
 function renderPayments() {
   const list = read(STORAGE.payments, []);
   const box = document.getElementById("payments-list");
+  if (!box) return;
   if (!list.length) {
     box.innerHTML = '<p class="empty">Nenhum pagamento registrado.</p>';
     return;
@@ -590,202 +628,4 @@ function renderPayments() {
   box.querySelectorAll("[data-action]").forEach((btn) => {
     btn.addEventListener("click", () => {
       const id = btn.closest(".msg-item").dataset.id;
-      if (btn.dataset.action === "delete") {
-        write(STORAGE.payments, list.filter((x) => x.id !== id));
-        renderPayments();
-      } else if (btn.dataset.action === "edit") {
-        const item = list.find((x) => x.id === id);
-        if (!item) return;
-        editingPaymentId = id;
-        document.getElementById("pay-caregiver").value = item.caregiver || "";
-        document.getElementById("pay-value").value = item.value || "";
-        document.getElementById("pay-date").value = item.date || "";
-        document.getElementById("pay-status").value = item.status || "pendente";
-        document.getElementById("pay-desc").value = item.desc || "";
-        document.getElementById("payment-form-wrap").classList.remove("hidden");
-      }
-    });
-  });
-}
-
-function openPaymentForm() {
-  editingPaymentId = null;
-  document.getElementById("pay-caregiver").value = "";
-  document.getElementById("pay-value").value = "";
-  document.getElementById("pay-date").value = "";
-  document.getElementById("pay-status").value = "pendente";
-  document.getElementById("pay-desc").value = "";
-  document.getElementById("payment-form-wrap").classList.remove("hidden");
-}
-
-function savePayment() {
-  const list = read(STORAGE.payments, []);
-  const item = {
-    id: editingPaymentId || uid("pay"),
-    caregiver: document.getElementById("pay-caregiver").value.trim(),
-    value: parseFloat(document.getElementById("pay-value").value) || 0,
-    date: document.getElementById("pay-date").value,
-    status: document.getElementById("pay-status").value,
-    desc: document.getElementById("pay-desc").value.trim(),
-    createdAt: new Date().toISOString()
-  };
-  if (editingPaymentId) {
-    const idx = list.findIndex((x) => x.id === editingPaymentId);
-    if (idx >= 0) list[idx] = { ...list[idx], ...item };
-  } else {
-    list.push(item);
-  }
-  write(STORAGE.payments, list);
-  document.getElementById("payment-form-wrap").classList.add("hidden");
-  renderPayments();
-}
-
-/* ---------- Settings ---------- */
-function loadSettings() {
-  const s = read(STORAGE.settings, DEFAULT_SETTINGS);
-  document.getElementById("s-name").value = s.name || "";
-  document.getElementById("s-phone").value = s.phone || "";
-  document.getElementById("s-email").value = s.email || "";
-  document.getElementById("s-city").value = s.city || "";
-}
-
-function saveSettings() {
-  const s = {
-    name: document.getElementById("s-name").value.trim(),
-    phone: document.getElementById("s-phone").value.trim(),
-    email: document.getElementById("s-email").value.trim(),
-    city: document.getElementById("s-city").value.trim()
-  };
-  write(STORAGE.settings, s);
-  const msg = document.getElementById("settings-saved");
-  msg.textContent = "Dados salvos!";
-  setTimeout(() => { msg.textContent = ""; }, 2500);
-}
-
-/* ---------- Export / Import ---------- */
-function exportData() {
-  const data = {
-    agenda: read(STORAGE.agenda, []),
-    favorites: read(STORAGE.favorites, []),
-    history: read(STORAGE.history, []),
-    messages: read(STORAGE.messages, []),
-    reviews: read(STORAGE.reviews, []),
-    payments: read(STORAGE.payments, []),
-    settings: read(STORAGE.settings, DEFAULT_SETTINGS)
-  };
-  const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
-  const a = document.createElement("a");
-  a.href = URL.createObjectURL(blob);
-  a.download = "cuidado-puro-paciente-" + new Date().toISOString().slice(0, 10) + ".json";
-  a.click();
-  URL.revokeObjectURL(a.href);
-}
-
-function importData(file) {
-  const reader = new FileReader();
-  reader.onload = () => {
-    try {
-      const data = JSON.parse(reader.result);
-      if (data.agenda) write(STORAGE.agenda, data.agenda);
-      if (data.favorites) write(STORAGE.favorites, data.favorites);
-      if (data.history) write(STORAGE.history, data.history);
-      if (data.messages) write(STORAGE.messages, data.messages);
-      if (data.reviews) write(STORAGE.reviews, data.reviews);
-      if (data.payments) write(STORAGE.payments, data.payments);
-      if (data.settings) write(STORAGE.settings, data.settings);
-      document.getElementById("import-msg").textContent = "Dados importados com sucesso!";
-      refreshAll();
-    } catch {
-      document.getElementById("import-msg").textContent = "Erro ao importar arquivo.";
-    }
-  };
-  reader.readAsText(file);
-}
-
-/* ---------- Helpers ---------- */
-function refreshIcons() {
-  if (typeof lucide !== "undefined") lucide.createIcons();
-}
-
-function refreshAll() {
-  renderOverview();
-  renderAgenda();
-  renderFavorites();
-  renderHistory();
-  renderMessages();
-  renderReviews();
-  renderPayments();
-  loadSettings();
-  refreshIcons();
-}
-
-/* ---------- Init ---------- */
-document.addEventListener("DOMContentLoaded", () => {
-  ensureDefaults();
-
-  document.getElementById("login-btn").addEventListener("click", login);
-  document.getElementById("login-pass").addEventListener("keydown", (e) => {
-    if (e.key === "Enter") login();
-  });
-  document.getElementById("logout-btn").addEventListener("click", logout);
-
-  document.querySelectorAll(".nav-item").forEach((btn) => {
-    btn.addEventListener("click", () => switchPanel(btn.dataset.panel));
-  });
-
-  // Agenda
-  document.getElementById("add-agenda").addEventListener("click", openAgendaForm);
-  document.getElementById("save-agenda").addEventListener("click", saveAgenda);
-  document.getElementById("cancel-agenda").addEventListener("click", () => {
-    document.getElementById("agenda-form-wrap").classList.add("hidden");
-  });
-
-  // Favorites
-  document.getElementById("add-favorite").addEventListener("click", openFavoriteForm);
-  document.getElementById("save-favorite").addEventListener("click", saveFavorite);
-  document.getElementById("cancel-favorite").addEventListener("click", () => {
-    document.getElementById("favorite-form-wrap").classList.add("hidden");
-  });
-
-  // History
-  document.getElementById("add-history").addEventListener("click", openHistoryForm);
-  document.getElementById("save-history").addEventListener("click", saveHistory);
-  document.getElementById("cancel-history").addEventListener("click", () => {
-    document.getElementById("history-form-wrap").classList.add("hidden");
-  });
-
-  // Messages
-  document.getElementById("clear-messages").addEventListener("click", () => {
-    write(STORAGE.messages, []);
-    renderMessages();
-    renderOverview();
-  });
-
-  // Reviews
-  document.getElementById("add-review").addEventListener("click", openReviewForm);
-  document.getElementById("save-review").addEventListener("click", saveReview);
-  document.getElementById("cancel-review").addEventListener("click", () => {
-    document.getElementById("review-form-wrap").classList.add("hidden");
-  });
-
-  // Payments
-  document.getElementById("add-payment").addEventListener("click", openPaymentForm);
-  document.getElementById("save-payment").addEventListener("click", savePayment);
-  document.getElementById("cancel-payment").addEventListener("click", () => {
-    document.getElementById("payment-form-wrap").classList.add("hidden");
-  });
-
-  // Settings
-  document.getElementById("save-settings").addEventListener("click", saveSettings);
-  document.getElementById("export-data").addEventListener("click", exportData);
-  document.getElementById("import-data").addEventListener("change", (e) => {
-    if (e.target.files[0]) importData(e.target.files[0]);
-  });
-
-  if (isLoggedIn()) {
-    showApp(true);
-  } else {
-    showApp(false);
-  }
-  refreshIcons();
-});
+      if (
