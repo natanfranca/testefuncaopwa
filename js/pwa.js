@@ -1,16 +1,16 @@
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", () => {
-    // Verifica se a página atual está dentro da subpasta 'telas'
-    const estaEmSubpasta = window.location.pathname.includes("/telas/");
-    const swPath = estaEmSubpasta ? "../service-worker.js" : "./service-worker.js";
+    // Detecta se a página atual está na pasta /telas/ ou na raiz
+    const emSubpasta = window.location.pathname.includes("/telas/");
+    const caminhoSW = emSubpasta ? "../service-worker.js" : "./service-worker.js";
 
     navigator.serviceWorker
-      .register(swPath)
+      .register(caminhoSW)
       .then((registro) => {
-        console.log("PWA ativada com sucesso no escopo:", registro.scope);
+        console.log("PWA ativada com sucesso:", registro.scope);
       })
       .catch((erro) => {
-        console.error("Não foi possível registrar a PWA:", erro);
+        console.error("Erro ao registrar PWA:", erro);
       });
   });
 }
