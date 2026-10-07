@@ -3,13 +3,13 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="manifest" href="/manifest.webmanifest">
-    <meta name="theme-color" content="#2e008b">
-    <meta name="mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="default">
-    <meta name="apple-mobile-web-app-title" content="Cuidado Puro">
-    <link rel="apple-touch-icon" href="/telas/img/pwa-icon-192.png">
+  <link rel="manifest" href="../manifest.webmanifest">
+  <meta name="theme-color" content="#2e008b">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="Cuidado Puro">
+  <link rel="apple-touch-icon" href="../telas/img/pwa-icon-192.png">
 
   <title>Dashboard Cuidador — Cuidado Puro</title>
   <link rel="stylesheet" href="../css/dashboardCuidador.css">
@@ -292,43 +292,4 @@
           </div>
           <div class="panel-actions" style="margin-top:14px">
             <button type="button" id="save-payment" class="btn-primary">Salvar</button>
-            <button type="button" id="cancel-payment" class="btn-secondary">Cancelar</button>
-          </div>
-        </div>
-      </section>
-
-      <!-- SETTINGS -->
-      <section id="panel-settings" class="panel">
-        <div class="card form-card">
-          <h3>Dados do cuidador</h3>
-          <label>Nome</label>
-          <input id="s-name" type="text" placeholder="Mariana Silva">
-          <label>Telefone (WhatsApp)</label>
-          <input id="s-phone" type="text" placeholder="(00) 00000-0000">
-          <label>E-mail</label>
-          <input id="s-email" type="email" placeholder="contato@cuidadopuro.com">
-          <label>Especialidade / foco</label>
-          <input id="s-focus" type="text" placeholder="Cuidados domiciliares, idosos...">
-          <button type="button" id="save-settings" class="btn-primary">Salvar</button>
-          <p id="settings-saved" class="success-msg"></p>
-        </div>
-        <div class="card form-card">
-          <h3>Exportar / Importar dados</h3>
-          <p class="hint">Baixe um JSON com tudo salvo neste navegador, ou importe um arquivo.</p>
-          <div class="row-actions">
-            <button type="button" id="export-data" class="btn-secondary">Exportar JSON</button>
-            <label class="btn-secondary file-btn">
-              Importar JSON
-              <input type="file" id="import-data" accept="application/json" hidden>
-            </label>
-          </div>
-          <p id="import-msg" class="success-msg"></p>
-        </div>
-      </section>
-    </div>
-  </div>
-
-  <script src="../js/dashboardCuidador.js"></script>
-    <script src="/js/pwa.js"></script>
-</body>
-</html>
+            <button type="button" id="cancel-payment" class="btn-secondary">Cancelar</
