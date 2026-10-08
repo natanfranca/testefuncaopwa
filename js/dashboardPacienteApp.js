@@ -21,6 +21,12 @@ const DEFAULT_SETTINGS = {
   city: "São Paulo, SP"
 };
 
+function nextDay(n) {
+  const d = new Date();
+  d.setDate(d.getDate() + n);
+  return d.toISOString().slice(0, 10);
+}
+
 const DEFAULT_AGENDA = [
   { id: "a1", date: nextDay(1), time: "09:00", caregiver: "Mariana Silva", type: "Acompanhamento matinal", phone: "", notes: "", createdAt: new Date().toISOString() },
   { id: "a2", date: nextDay(3), time: "14:30", caregiver: "João Pedro", type: "Medicação e curativo", phone: "", notes: "", createdAt: new Date().toISOString() }
@@ -41,12 +47,6 @@ const DEFAULT_REVIEWS = [
   { id: "v1", name: "Mariana Silva", rating: 5, text: "Atendimento atencioso e pontual. Recomendo!", createdAt: new Date().toISOString() },
   { id: "v2", name: "João Pedro", rating: 4.8, text: "Muito profissional e cuidadoso.", createdAt: new Date().toISOString() }
 ];
-
-function nextDay(n) {
-  const d = new Date();
-  d.setDate(d.getDate() + n);
-  return d.toISOString().slice(0, 10);
-}
 
 function read(key, fallback) {
   try {
@@ -98,9 +98,20 @@ function formatDate(iso) {
 }
 
 function refreshIcons() {
-  if (window.lucide) {
-    window.lucide.createIcons();
+  if (window.lucide && typeof lucide.createIcons === "function") {
+    lucide.createIcons();
   }
+}
+
+/* ---------- Sidebar Responsiva (Abrir e Fechar) ---------- */
+function toggleSidebar() {
+  const app = document.getElementById("app");
+  if (app) app.classList.toggle("sidebar-open");
+}
+
+function closeSidebar() {
+  const app = document.getElementById("app");
+  if (app) app.classList.remove("sidebar-open");
 }
 
 /* ---------- Auth ---------- */
@@ -212,26 +223,178 @@ function renderOverview() {
         <p>${escapeHtml(a.notes || "")}</p>
       </div>`).join("");
   }
+
+  const boxF = document.getElementById("overview-favorites");
+  if (boxF) {
+    const topFav = favorites.slice(0, 5);
+    boxF.innerHTML = !topFav.length ? '<p class="empty">Nenhum favorito.</p>' : topFav.map((f) => `
+      <div class="msg-item">
+        <div class="msg-meta"><span>${escapeHtml(f.specialty || "")}</span></div>
+        <h4>${escapeHtml(f.name || "Cuidador")}</h4>
+        <p>${escapeHtml(f.notes || "")}</p>
+      </div>`).join("");
+  }
+
+  const boxH = document.getElementById("overview-history");
+  if (boxH) {
+    const topHist = history.slice(0, 5);
+    boxH.innerHTML = !topHist.length ? '<p class="empty">Nenhum histórico.</p>' : topHist.map((h) => `
+      <div class="msg-item">
+        <div class="msg-meta"><span>${escapeHtml(h.date || "")}${h.duration ? " · " + escapeHtml(h.duration) : ""}</span></div>
+        <h4>${escapeHtml(h.caregiver || "Cuidador")} — ${escapeHtml(h.type || "")}</h4>
+        <p>${escapeHtml(h.notes || "")}</p>
+      </div>`).join("");
+  }
 }
 
-function renderAgenda() { /* Implementação básica */ }
-function renderFavorites() { /* Implementação básica */ }
-function renderHistory() { /* Implementação básica */ }
-function renderMessages() { /* Implementação básica */ }
-function renderReviews() { /* Implementação básica */ }
-function renderPayments() { /* Implementação básica */ }
+function renderAgenda() {
+  const list = read(STORAGE.agenda, []);
+  const box = document.getElementById("agenda-list");
+  if (!box) return;
+  if (!list.length) {
+    box.innerHTML = '<p class="empty">Nenhum agendamento registrado.</p>';
+    return;
+  }
+  box.innerHTML = list.map((a) => `
+    <div class="msg-item" data-id="${a.id}">
+      <div class="msg-meta"><span>${escapeHtml([a.date, a.time].filter(Boolean).join(" · "))}</span></div>
+      <h4>${escapeHtml(a.caregiver || "Cuidador")} — ${escapeHtml(a.type || "Cuidado")}</h4>
+      <p>${escapeHtml(a.notes || "")}</p>
+      <div class="msg-actions">
+        <button type="button" class="btn-danger" data-action="delete">Excluir</button>
+      </div>
+    </div>`).join("");
+
+  box.querySelectorAll("[data-action=delete]").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const id = btn.closest(".msg-item").dataset.id;
+      write(STORAGE.agenda, list.filter((x) => x.id !== id));
+      renderAgenda();
+      renderOverview();
+    });
+  });
+}
+
+function renderFavorites() {
+  const list = read(STORAGE.favorites, []);
+  const box = document.getElementById("favorites-list");
+  if (!box) return;
+  if (!list.length) {
+    box.innerHTML = '<p class="empty">Nenhum favorito adicionado.</p>';
+    return;
+  }
+  box.innerHTML = list.map((f) => `
+    <div class="msg-item" data-id="${f.id}">
+      <div class="msg-meta"><span>${escapeHtml(f.specialty || "")}${f.city ? " · " + escapeHtml(f.city) : ""}</span></div>
+      <h4>${escapeHtml(f.name || "Cuidador")}</h4>
+      <p>${escapeHtml(f.notes || "")}</p>
+      <div class="msg-actions">
+        <button type="button" class="btn-danger" data-action="delete">Excluir</button>
+      </div>
+    </div>`).join("");
+
+  box.querySelectorAll("[data-action=delete]").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const id = btn.closest(".msg-item").dataset.id;
+      write(STORAGE.favorites, list.filter((x) => x.id !== id));
+      renderFavorites();
+      renderOverview();
+    });
+  });
+}
+
+function renderHistory() {
+  const list = read(STORAGE.history, []);
+  const box = document.getElementById("history-list");
+  if (!box) return;
+  if (!list.length) {
+    box.innerHTML = '<p class="empty">Nenhum histórico registrado.</p>';
+    return;
+  }
+  box.innerHTML = list.map((h) => `
+    <div class="msg-item" data-id="${h.id}">
+      <div class="msg-meta"><span>${escapeHtml(h.date || "")}${h.duration ? " · " + escapeHtml(h.duration) : ""}</span></div>
+      <h4>${escapeHtml(h.caregiver || "Cuidador")} — ${escapeHtml(h.type || "")}</h4>
+      <p>${escapeHtml(h.notes || "")}</p>
+      <div class="msg-actions">
+        <button type="button" class="btn-danger" data-action="delete">Excluir</button>
+      </div>
+    </div>`).join("");
+
+  box.querySelectorAll("[data-action=delete]").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const id = btn.closest(".msg-item").dataset.id;
+      write(STORAGE.history, list.filter((x) => x.id !== id));
+      renderHistory();
+      renderOverview();
+    });
+  });
+}
+
+function renderMessages() {
+  const list = read(STORAGE.messages, []);
+  const box = document.getElementById("messages-list");
+  if (!box) return;
+  if (!list.length) {
+    box.innerHTML = '<p class="empty">Nenhuma mensagem.</p>';
+    return;
+  }
+  box.innerHTML = list.map((m) => `
+    <div class="msg-item ${m.read ? "" : "unread"}">
+      <div class="msg-meta">
+        <span>${escapeHtml(m.name || "Cuidador")}${m.phone ? " · " + escapeHtml(m.phone) : ""}</span>
+        <span>${formatDate(m.createdAt)}</span>
+      </div>
+      <p>${escapeHtml(m.message || "")}</p>
+    </div>`).join("");
+}
+
+function renderReviews() {
+  const list = read(STORAGE.reviews, []);
+  const box = document.getElementById("reviews-list");
+  if (!box) return;
+  if (!list.length) {
+    box.innerHTML = '<p class="empty">Nenhuma avaliação realizada.</p>';
+    return;
+  }
+  box.innerHTML = list.map((r) => `
+    <div class="msg-item">
+      <div class="msg-meta">
+        <span>Nota: ${escapeHtml(String(r.rating || ""))} ★</span>
+        <span>${formatDate(r.createdAt)}</span>
+      </div>
+      <h4>${escapeHtml(r.name || "Cuidador")}</h4>
+      <p>${escapeHtml(r.text || "")}</p>
+    </div>`).join("");
+}
+
+function renderPayments() {
+  const list = read(STORAGE.payments, []);
+  const box = document.getElementById("payments-list");
+  if (!box) return;
+  if (!list.length) {
+    box.innerHTML = '<p class="empty">Nenhum registro de pagamento.</p>';
+    return;
+  }
+  box.innerHTML = list.map((p) => `
+    <div class="msg-item ${p.status}">
+      <div class="msg-meta">
+        <span>${escapeHtml(p.date || "")} · Status: ${escapeHtml(p.status || "")}</span>
+        <span>R$ ${Number(p.value || 0).toFixed(2)}</span>
+      </div>
+      <h4>${escapeHtml(p.caregiver || "Cuidador")}</h4>
+      <p>${escapeHtml(p.desc || "")}</p>
+    </div>`).join("");
+}
 
 /* ---------- Inicialização dos Eventos ---------- */
 document.addEventListener("DOMContentLoaded", () => {
   ensureDefaults();
 
-  // Evento de Login
+  // Eventos de Autenticação
   const loginBtn = document.getElementById("login-btn");
-  if (loginBtn) {
-    loginBtn.addEventListener("click", login);
-  }
+  if (loginBtn) loginBtn.addEventListener("click", login);
 
-  // Permitir Login ao pressionar Enter no input da senha
   const passInput = document.getElementById("login-pass");
   if (passInput) {
     passInput.addEventListener("keydown", (e) => {
@@ -239,23 +402,41 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // Evento de Logout
   const logoutBtn = document.getElementById("logout-btn");
-  if (logoutBtn) {
-    logoutBtn.addEventListener("click", logout);
-  }
+  if (logoutBtn) logoutBtn.addEventListener("click", logout);
 
-  // Navegação no Sidebar
+  // Eventos para Menu Lateral Responsivo
+  const toggleBtn = document.getElementById("sidebar-toggle");
+  const overlay = document.getElementById("sidebar-overlay");
+
+  if (toggleBtn) toggleBtn.addEventListener("click", toggleSidebar);
+  if (overlay) overlay.addEventListener("click", closeSidebar);
+
+  // Navegação no Sidebar (Troca de ecrã e recolhe o menu no mobile)
   document.querySelectorAll(".nav-item").forEach((btn) => {
     btn.addEventListener("click", () => {
-      if (btn.dataset.panel) switchPanel(btn.dataset.panel);
+      if (btn.dataset.panel) {
+        switchPanel(btn.dataset.panel);
+        closeSidebar();
+      }
     });
   });
 
-  // Inicia checando o login (ou forçando a tela inicial de login)
-  if (isLoggedIn()) {
-    showApp(true);
-  } else {
-    showApp(false);
-  }
+  // Formulário Agenda
+  const addAg = document.getElementById("add-agenda");
+  if (addAg) addAg.addEventListener("click", () => {
+    const wrap = document.getElementById("agenda-form-wrap");
+    if (wrap) wrap.classList.remove("hidden");
+  });
+  const cancelAg = document.getElementById("cancel-agenda");
+  if (cancelAg) cancelAg.addEventListener("click", () => {
+    const wrap = document.getElementById("agenda-form-wrap");
+    if (wrap) wrap.classList.add("hidden");
+  });
+
+  // Checar Login
+  if (isLoggedIn()) showApp(true);
+  else showApp(false);
+
+  refreshIcons();
 });
