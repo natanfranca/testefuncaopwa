@@ -281,8 +281,8 @@ body {
         flex-direction: column;
         justify-content: flex-start;
         text-align: center;
-        padding: 30px 20px 20px;
-        gap: 18px; /* Reduz o espaço na área marcada em amarelo */
+        padding: 30px 20px 40px;
+        gap: 15px; /* Reduz o espaço na área marcada em amarelo */
     }
 
     .hero-content {
@@ -304,7 +304,7 @@ body {
 
     .hero-philosophy {
         max-width: 100%;
-        padding: 1.5rem;
+        padding: 1rem;
     }
 
     .philosophy-list li {
