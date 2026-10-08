@@ -79,6 +79,11 @@ body {
     white-space: nowrap;
 }
 
+.logo-coracao {
+    position: relative;
+    top: 0.875rem; /* Valores negativos movem para cima */
+  }
+
 .nav-links {
     display: flex;
     align-items: center;
