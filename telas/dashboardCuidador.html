@@ -88,3 +88,203 @@
             <strong id="stat-requests">0</strong>
             <span class="stat-note">pendentes</span>
           </article>
+          <article class="stat-card">
+            <span class="stat-label">Pacientes</span>
+            <strong id="stat-patients">0</strong>
+            <span class="stat-note">cadastrados</span>
+          </article>
+          <article class="stat-card">
+            <span class="stat-label">Avaliação</span>
+            <strong id="stat-rating">—</strong>
+            <span class="stat-note">média</span>
+          </article>
+        </div>
+        <div class="card">
+          <h3>Próximos agendamentos</h3>
+          <div id="overview-agenda" class="list"></div>
+        </div>
+        <div class="card">
+          <h3>Solicitações recentes</h3>
+          <div id="overview-requests" class="list"></div>
+        </div>
+        <div class="card">
+          <h3>Últimas mensagens</h3>
+          <div id="overview-messages" class="list"></div>
+        </div>
+      </section>
+
+      <!-- AGENDA -->
+      <section id="panel-agenda" class="panel">
+        <div class="panel-actions">
+          <button type="button" id="add-agenda" class="btn-primary">+ Novo agendamento</button>
+        </div>
+        <div id="agenda-list" class="list"></div>
+        <div id="agenda-form-wrap" class="card hidden">
+          <h3>Novo agendamento</h3>
+          <div class="form-grid">
+            <div>
+              <label>Data</label>
+              <input id="ag-date" type="date">
+            </div>
+            <div>
+              <label>Horário</label>
+              <input id="ag-time" type="time">
+            </div>
+            <div>
+              <label>Paciente</label>
+              <input id="ag-patient" type="text" placeholder="Nome do paciente">
+            </div>
+            <div>
+              <label>Tipo de cuidado</label>
+              <input id="ag-type" type="text" placeholder="Ex.: Acompanhamento, Curativo...">
+            </div>
+            <div>
+              <label>Telefone</label>
+              <input id="ag-phone" type="tel" placeholder="WhatsApp">
+            </div>
+            <div class="full">
+              <label>Observações</label>
+              <textarea id="ag-notes" placeholder="Detalhes..."></textarea>
+            </div>
+          </div>
+          <div class="panel-actions" style="margin-top:14px">
+            <button type="button" id="save-agenda" class="btn-primary">Salvar</button>
+            <button type="button" id="cancel-agenda" class="btn-secondary">Cancelar</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- SOLICITAÇÕES -->
+      <section id="panel-requests" class="panel">
+        <div id="requests-list" class="list"></div>
+      </section>
+
+      <!-- PACIENTES -->
+      <section id="panel-patients" class="panel">
+        <div class="panel-actions">
+          <button type="button" id="add-patient" class="btn-primary">+ Novo paciente</button>
+        </div>
+        <div id="patients-list" class="list"></div>
+        <div id="patient-form-wrap" class="card hidden">
+          <h3>Novo paciente</h3>
+          <div class="form-grid">
+            <div>
+              <label>Nome do paciente</label>
+              <input id="pat-name" type="text" placeholder="Nome completo">
+            </div>
+            <div>
+              <label>Idade</label>
+              <input id="pat-age" type="number" placeholder="Ex.: 75">
+            </div>
+            <div>
+              <label>Telefone</label>
+              <input id="pat-phone" type="tel" placeholder="WhatsApp">
+            </div>
+            <div>
+              <label>Cidade</label>
+              <input id="pat-city" type="text" placeholder="Cidade">
+            </div>
+            <div class="full">
+              <label>Observações / Condições</label>
+              <textarea id="pat-notes" placeholder="Histórico, limitações..."></textarea>
+            </div>
+          </div>
+          <div class="panel-actions" style="margin-top:14px">
+            <button type="button" id="save-patient" class="btn-primary">Salvar</button>
+            <button type="button" id="cancel-patient" class="btn-secondary">Cancelar</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- MESSAGES -->
+      <section id="panel-messages" class="panel">
+        <div id="messages-list" class="list"></div>
+      </section>
+
+      <!-- REVIEWS -->
+      <section id="panel-reviews" class="panel">
+        <div id="reviews-list" class="list"></div>
+      </section>
+
+      <!-- PAYMENTS -->
+      <section id="panel-payments" class="panel"><!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="manifest" href="../manifest.webmanifest">
+  <meta name="theme-color" content="#2e008b">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="Cuidado Puro">
+  <link rel="apple-touch-icon" href="../telas/img/pwa-icon-192.png">
+  <link rel="shortcut icon" href="../telas/img/pwa-icon-192.png" type="image/png">
+
+  <title>Dashboard Cuidador — Cuidado Puro</title>
+  <link rel="stylesheet" href="../css/dashboardCuidador.css">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/lucide@0.577.0/dist/umd/lucide.min.js"></script>
+</head>
+<body>
+  <!-- Login -->
+  <div id="login-screen" class="login-screen">
+    <div class="login-card">
+      <p class="eyebrow">Área do cuidador</p>
+      <h1>Cuidado Puro</h1>
+      <p class="login-hint">Acesso de demonstração. Senha: <strong>cuidado123</strong></p>
+      <label for="login-pass">Senha</label>
+      <input type="password" id="login-pass" placeholder="Digite a senha" autocomplete="current-password">
+      <p id="login-error" class="error-msg"></p>
+      <button type="button" id="login-btn" class="btn-primary">Entrar</button>
+    </div>
+  </div>
+
+  <!-- App -->
+  <div id="app" class="app hidden">
+    <aside class="sidebar">
+      <div class="sidebar-brand">
+        <span class="brand-icon">♡</span>
+        <span class="brand-text">Cuidado Puro</span>
+      </div>
+      <nav class="sidebar-nav">
+        <button type="button" class="nav-item active" data-panel="overview" data-label="Visão geral">
+          <i data-lucide="layout-dashboard"></i><span>Visão geral</span>
+        </button>
+        <button type="button" class="nav-item" data-panel="agenda" data-label="Agenda">
+          <i data-lucide="calendar-days"></i><span>Agenda</span>
+        </button>
+        <button type="button" class="nav-item" data-panel="requests" data-label="Solicitações">
+          <i data-lucide="clipboard-list"></i><span>Solicitações</span>
+        </button>
+        <button type="button" class="nav-item" data-panel="patients" data-label="Pacientes">
+          <i data-lucide="users"></i><span>Pacientes</span>
+        </button>
+        <button type="button" class="nav-item" data-panel="messages" data-label="Mensagens">
+          <i data-lucide="message-circle"></i><span>Mensagens</span>
+        </button>
+        <button type="button" class="nav-item" data-panel="reviews" data-label="Avaliações">
+          <i data-lucide="star"></i><span>Avaliações</span>
+        </button>
+        <button type="button" class="nav-item" data-panel="payments" data-label="Pagamentos">
+          <i data-lucide="wallet"></i><span>Pagamentos</span>
+        </button>
+
+        <div id="payments-list" class="list"></div>
+      </section>
+
+      <!-- SETTINGS -->
+      <section id="panel-settings" class="panel">
+        <div class="card form-card">
+          <h3>Configurações do perfil</h3>
+          <p>Sua conta de demonstração está ativa.</p>
+        </div>
+      </section>
+
+    </div>
+  </div>
+
+  <script src="../js/dashboardCuidador.js"></script>
+  <script src="../js/pwa.js"></script>
+</body>
+</html>
