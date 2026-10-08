@@ -96,6 +96,17 @@ function formatDate(iso) {
   return d.toLocaleDateString("pt-BR", { day: "2-digit", month: "short", year: "numeric" });
 }
 
+/* ---------- Controladores do Menu Lateral (Mobile/Tablet) ---------- */
+function toggleSidebar() {
+  const app = document.getElementById("app");
+  if (app) app.classList.toggle("sidebar-open");
+}
+
+function closeSidebar() {
+  const app = document.getElementById("app");
+  if (app) app.classList.remove("sidebar-open");
+}
+
 /* ---------- Login & Logout ---------- */
 function isLoggedIn() {
   return localStorage.getItem(STORAGE.auth) === "1";
@@ -354,6 +365,7 @@ function refreshAll() {
 document.addEventListener("DOMContentLoaded", () => {
   ensureDefaults();
 
+  // Login / Logout
   const loginBtn = document.getElementById("login-btn");
   if (loginBtn) loginBtn.onclick = login;
 
@@ -367,10 +379,22 @@ document.addEventListener("DOMContentLoaded", () => {
   const logoutBtn = document.getElementById("logout-btn");
   if (logoutBtn) logoutBtn.addEventListener("click", logout);
 
+  // Botões e Eventos da Sidebar (Responsividade)
+  const toggleBtn = document.getElementById("sidebar-toggle");
+  const overlay = document.getElementById("sidebar-overlay");
+
+  if (toggleBtn) toggleBtn.addEventListener("click", toggleSidebar);
+  if (overlay) overlay.addEventListener("click", closeSidebar);
+
+  // Navegação (troca de aba e fecha o menu no mobile)
   document.querySelectorAll(".nav-item").forEach((btn) => {
-    btn.addEventListener("click", () => switchPanel(btn.dataset.panel));
+    btn.addEventListener("click", () => {
+      switchPanel(btn.dataset.panel);
+      closeSidebar();
+    });
   });
 
+  // Formulário Agenda
   const addAg = document.getElementById("add-agenda");
   if (addAg) addAg.addEventListener("click", openAgendaForm);
   const saveAg = document.getElementById("save-agenda");
@@ -381,6 +405,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if (wrap) wrap.classList.add("hidden");
   });
 
+  // Formulário Pacientes
   const addPat = document.getElementById("add-patient");
   if (addPat) addPat.addEventListener("click", openPatientForm);
   const savePat = document.getElementById("save-patient");
@@ -391,6 +416,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if (wrap) wrap.classList.add("hidden");
   });
 
+  // Checagem de Sessão
   if (isLoggedIn()) showApp(true);
   else showApp(false);
 
