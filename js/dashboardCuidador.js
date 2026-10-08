@@ -21,6 +21,12 @@ const DEFAULT_SETTINGS = {
   focus: "Cuidados domiciliares"
 };
 
+function nextDay(n) {
+  const d = new Date();
+  d.setDate(d.getDate() + n);
+  return d.toISOString().slice(0, 10);
+}
+
 const DEFAULT_AGENDA = [
   { id: "a1", date: nextDay(1), time: "09:00", patient: "Ana Lúcia", type: "Acompanhamento matinal", phone: "", notes: "", createdAt: new Date().toISOString() },
   { id: "a2", date: nextDay(2), time: "14:30", patient: "Carlos Mendes", type: "Medicação e curativo", phone: "", notes: "", createdAt: new Date().toISOString() }
@@ -40,12 +46,6 @@ const DEFAULT_REVIEWS = [
   { id: "v1", name: "Família Ana Lúcia", rating: 5, text: "Atendimento atencioso e pontual.", createdAt: new Date().toISOString() },
   { id: "v2", name: "Carlos Mendes", rating: 4.8, text: "Muito profissional e cuidadosa.", createdAt: new Date().toISOString() }
 ];
-
-function nextDay(n) {
-  const d = new Date();
-  d.setDate(d.getDate() + n);
-  return d.toISOString().slice(0, 10);
-}
 
 function read(key, fallback) {
   try {
@@ -124,35 +124,19 @@ function login(e) {
   const passEl = document.getElementById("login-pass");
   const err = document.getElementById("login-error");
   
-  if (!passEl) {
-    alert("Erro: O campo de senha não foi encontrado no HTML!");
-    return;
-  }
+  if (!passEl) return;
   
   const pass = passEl.value.trim();
   
-  if (pass === "cuidado123") {
-    localStorage.setItem("cp_auth", "1");
-    
-    // Esconde a tela de login e exibe o painel
-    document.getElementById("login-screen").classList.add("hidden");
-    document.getElementById("login-screen").style.display = "none";
-    
-    const app = document.getElementById("app");
-    app.classList.remove("hidden");
-    app.style.display = "flex";
+  if (pass === DEFAULT_PASSWORD) {
+    localStorage.setItem(STORAGE.auth, "1");
+    if (err) err.textContent = "";
+    showApp(true);
   } else {
-    if (err) err.textContent = "Senha incorreta. Use: cuidado123";
+    if (err) err.textContent = "Senha incorreta. Tente 'cuidado123'.";
   }
 }
 
-// Vincula o evento de clique assim que o DOM carregar
-document.addEventListener("DOMContentLoaded", () => {
-  const loginBtn = document.getElementById("login-btn");
-  if (loginBtn) {
-    loginBtn.onclick = login;
-  }
-});
 function logout() {
   localStorage.removeItem(STORAGE.auth);
   showApp(false);
@@ -361,12 +345,15 @@ function refreshAll() {
   refreshIcons();
 }
 
+// Inicialização única e limpa quando a página carrega
 document.addEventListener("DOMContentLoaded", () => {
   ensureDefaults();
 
   // Login
   const loginBtn = document.getElementById("login-btn");
-  if (loginBtn) loginBtn.addEventListener("click", login);
+  if (loginBtn) {
+    loginBtn.onclick = login;
+  }
 
   const passInput = document.getElementById("login-pass");
   if (passInput) {
@@ -405,43 +392,5 @@ document.addEventListener("DOMContentLoaded", () => {
   if (isLoggedIn()) showApp(true);
   else showApp(false);
 
-  // Teste direto de clique e validação
-window.addEventListener("DOMContentLoaded", function () {
-  console.log("Script carregado com sucesso!");
-
-  var loginBtn = document.getElementById("login-btn");
-  var passInput = document.getElementById("login-pass");
-  var errorText = document.getElementById("login-error");
-
-  if (!loginBtn) {
-    console.error("Botão 'login-btn' não encontrado no HTML!");
-    return;
-  }
-
-  loginBtn.onclick = function (e) {
-    if (e) e.preventDefault();
-
-    var senhaDigitada = passInput ? passInput.value.trim() : "";
-
-    if (senhaDigitada === "cuidado123") {
-      // Oculta a tela de login
-      var loginScreen = document.getElementById("login-screen");
-      if (loginScreen) loginScreen.style.display = "none";
-
-      // Mostra a tela da aplicação
-      var appScreen = document.getElementById("app");
-      if (appScreen) {
-        appScreen.classList.remove("hidden");
-        appScreen.style.display = "flex";
-      }
-    } else {
-      if (errorText) {
-        errorText.textContent = "Senha incorreta. Tente 'cuidado123'.";
-      } else {
-        alert("Senha incorreta. Tente 'cuidado123'.");
-      }
-    }
-  };
-});
   refreshIcons();
 });
