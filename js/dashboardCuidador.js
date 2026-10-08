@@ -405,5 +405,43 @@ document.addEventListener("DOMContentLoaded", () => {
   if (isLoggedIn()) showApp(true);
   else showApp(false);
 
+  // Teste direto de clique e validação
+window.addEventListener("DOMContentLoaded", function () {
+  console.log("Script carregado com sucesso!");
+
+  var loginBtn = document.getElementById("login-btn");
+  var passInput = document.getElementById("login-pass");
+  var errorText = document.getElementById("login-error");
+
+  if (!loginBtn) {
+    console.error("Botão 'login-btn' não encontrado no HTML!");
+    return;
+  }
+
+  loginBtn.onclick = function (e) {
+    if (e) e.preventDefault();
+
+    var senhaDigitada = passInput ? passInput.value.trim() : "";
+
+    if (senhaDigitada === "cuidado123") {
+      // Oculta a tela de login
+      var loginScreen = document.getElementById("login-screen");
+      if (loginScreen) loginScreen.style.display = "none";
+
+      // Mostra a tela da aplicação
+      var appScreen = document.getElementById("app");
+      if (appScreen) {
+        appScreen.classList.remove("hidden");
+        appScreen.style.display = "flex";
+      }
+    } else {
+      if (errorText) {
+        errorText.textContent = "Senha incorreta. Tente 'cuidado123'.";
+      } else {
+        alert("Senha incorreta. Tente 'cuidado123'.");
+      }
+    }
+  };
+});
   refreshIcons();
 });
