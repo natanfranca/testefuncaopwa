@@ -4,33 +4,33 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="manifest" href="./manifest.webmanifest">
+    <link rel="manifest" href="/manifest.webmanifest">
     <meta name="theme-color" content="#2e008b">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
     <meta name="apple-mobile-web-app-title" content="Cuidado Puro">
-    <link rel="apple-touch-icon" href="./telas/img/pwa-icon-192.png">
+    <link rel="apple-touch-icon" href="/telas/img/pwa-icon-192.png">
 
     <title>Cuidado Puro Home Health</title>
 
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
-
     <link rel="stylesheet" href="css/style.css">
 </head>
 
 <body>
 
     <header class="navbar">
-
         <div class="logo">
-            <a href="./index.html"><img src="./telas/img/logo_(2).png" alt="Logo"></a>
-            <a href="./index.html" class="logo-text">Cuidado Puro</a>
+            <a href="/index.html" class="logo-link">
+                <img src="/telas/img/logo_(2).png" alt="Logo">
+                <span class="logo-text">Cuidado Puro</span>
+            </a>
         </div>
 
         <nav>
             <ul class="nav-links">
-                <li><a href="./index.html" style="color: #67c2b8;">Início</a></li>
+                <li><a href="/index.html" style="color: #67c2b8;">Início</a></li>
                 <li><a href="telas/sobre.html">Sobre</a></li>
                 <li><a href="telas/beneficios.html">Benefícios</a></li>
                 <li><a href="telas/opinioes.html">Opiniões</a></li>
@@ -42,15 +42,13 @@
             <a href="telas/telaLogin.html" class="btn-login">Entrar</a>
             <button class="btn-menu" id="btn-menu" aria-label="Abrir menu de navegação">☰</button>
         </div>
-
     </header>
 
     <main class="hero-section">
-
         <div class="hero-content">
             <h1>Cuidado Puro <br> <span class="highlight-text">Home Health</span></h1>
             <hr class="divider">
-            <a href="telas/telaescolha.html" class="btn-cadastrar button">Cadastre-se</a>
+            <a href="telas/telaescolha.html" class="btn-cadastrar">Cadastre-se</a>
         </div>
 
         <div class="hero-philosophy">
@@ -64,7 +62,6 @@
                 <li>Compromisso genuíno com a sua qualidade de vida</li>
             </ul>
         </div>
-
     </main>
 
     <script src="js/pwa.js"></script>
