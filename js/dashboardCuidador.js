@@ -105,29 +105,28 @@ function showApp(show) {
   const loginScreen = document.getElementById("login-screen");
   const appScreen = document.getElementById("app");
   if (loginScreen && appScreen) {
-    loginScreen.classList.toggle("hidden", show);
-    appScreen.classList.toggle("hidden", !show);
     if (show) {
       loginScreen.style.display = "none";
       appScreen.style.display = "flex";
+      loginScreen.classList.add("hidden");
+      appScreen.classList.remove("hidden");
       refreshAll();
     } else {
       loginScreen.style.display = "flex";
       appScreen.style.display = "none";
+      loginScreen.classList.remove("hidden");
+      appScreen.classList.add("hidden");
     }
   }
 }
 
 function login(e) {
   if (e) e.preventDefault();
-  
   const passEl = document.getElementById("login-pass");
   const err = document.getElementById("login-error");
-  
   if (!passEl) return;
   
   const pass = passEl.value.trim();
-  
   if (pass === DEFAULT_PASSWORD) {
     localStorage.setItem(STORAGE.auth, "1");
     if (err) err.textContent = "";
@@ -152,7 +151,8 @@ function switchPanel(panel) {
   });
   const active = document.querySelector('.nav-item[data-panel="' + panel + '"]');
   if (active) {
-    document.getElementById("panel-title").textContent = active.dataset.label || panel;
+    const titleEl = document.getElementById("panel-title");
+    if (titleEl) titleEl.textContent = active.dataset.label || panel;
   }
   refreshIcons();
 }
@@ -255,23 +255,26 @@ function openAgendaForm() {
     const el = document.getElementById(id);
     if (el) el.value = "";
   });
-  document.getElementById("agenda-form-wrap").classList.remove("hidden");
+  const wrap = document.getElementById("agenda-form-wrap");
+  if (wrap) wrap.classList.remove("hidden");
 }
 
 function saveAgenda() {
   const list = read(STORAGE.agenda, []);
+  const getDate = (id) => document.getElementById(id) ? document.getElementById(id).value : "";
   list.unshift({
     id: uid("a"),
-    date: document.getElementById("ag-date").value,
-    time: document.getElementById("ag-time").value,
-    patient: document.getElementById("ag-patient").value.trim(),
-    type: document.getElementById("ag-type").value.trim(),
-    phone: document.getElementById("ag-phone").value.trim(),
-    notes: document.getElementById("ag-notes").value.trim(),
+    date: getDate("ag-date"),
+    time: getDate("ag-time"),
+    patient: getDate("ag-patient").trim(),
+    type: getDate("ag-type").trim(),
+    phone: getDate("ag-phone").trim(),
+    notes: getDate("ag-notes").trim(),
     createdAt: new Date().toISOString()
   });
   write(STORAGE.agenda, list);
-  document.getElementById("agenda-form-wrap").classList.add("hidden");
+  const wrap = document.getElementById("agenda-form-wrap");
+  if (wrap) wrap.classList.add("hidden");
   renderAgenda();
   renderOverview();
 }
@@ -313,22 +316,25 @@ function openPatientForm() {
     const el = document.getElementById(id);
     if (el) el.value = "";
   });
-  document.getElementById("patient-form-wrap").classList.remove("hidden");
+  const wrap = document.getElementById("patient-form-wrap");
+  if (wrap) wrap.classList.remove("hidden");
 }
 
 function savePatient() {
   const list = read(STORAGE.patients, []);
+  const getValue = (id) => document.getElementById(id) ? document.getElementById(id).value : "";
   list.unshift({
     id: uid("p"),
-    name: document.getElementById("pat-name").value.trim(),
-    age: Number(document.getElementById("pat-age").value) || "",
-    phone: document.getElementById("pat-phone").value.trim(),
-    city: document.getElementById("pat-city").value.trim(),
-    notes: document.getElementById("pat-notes").value.trim(),
+    name: getValue("pat-name").trim(),
+    age: Number(getValue("pat-age")) || "",
+    phone: getValue("pat-phone").trim(),
+    city: getValue("pat-city").trim(),
+    notes: getValue("pat-notes").trim(),
     createdAt: new Date().toISOString()
   });
   write(STORAGE.patients, list);
-  document.getElementById("patient-form-wrap").classList.add("hidden");
+  const wrap = document.getElementById("patient-form-wrap");
+  if (wrap) wrap.classList.add("hidden");
   renderPatients();
   renderOverview();
 }
@@ -345,15 +351,11 @@ function refreshAll() {
   refreshIcons();
 }
 
-// Inicialização única e limpa quando a página carrega
 document.addEventListener("DOMContentLoaded", () => {
   ensureDefaults();
 
-  // Login
   const loginBtn = document.getElementById("login-btn");
-  if (loginBtn) {
-    loginBtn.onclick = login;
-  }
+  if (loginBtn) loginBtn.onclick = login;
 
   const passInput = document.getElementById("login-pass");
   if (passInput) {
@@ -365,19 +367,18 @@ document.addEventListener("DOMContentLoaded", () => {
   const logoutBtn = document.getElementById("logout-btn");
   if (logoutBtn) logoutBtn.addEventListener("click", logout);
 
-  // Navegação
   document.querySelectorAll(".nav-item").forEach((btn) => {
     btn.addEventListener("click", () => switchPanel(btn.dataset.panel));
   });
 
-  // Formulários
   const addAg = document.getElementById("add-agenda");
   if (addAg) addAg.addEventListener("click", openAgendaForm);
   const saveAg = document.getElementById("save-agenda");
   if (saveAg) saveAg.addEventListener("click", saveAgenda);
   const cancelAg = document.getElementById("cancel-agenda");
   if (cancelAg) cancelAg.addEventListener("click", () => {
-    document.getElementById("agenda-form-wrap").classList.add("hidden");
+    const wrap = document.getElementById("agenda-form-wrap");
+    if (wrap) wrap.classList.add("hidden");
   });
 
   const addPat = document.getElementById("add-patient");
@@ -386,7 +387,8 @@ document.addEventListener("DOMContentLoaded", () => {
   if (savePat) savePat.addEventListener("click", savePatient);
   const cancelPat = document.getElementById("cancel-patient");
   if (cancelPat) cancelPat.addEventListener("click", () => {
-    document.getElementById("patient-form-wrap").classList.add("hidden");
+    const wrap = document.getElementById("patient-form-wrap");
+    if (wrap) wrap.classList.add("hidden");
   });
 
   if (isLoggedIn()) showApp(true);
