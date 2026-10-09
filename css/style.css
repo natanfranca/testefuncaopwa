@@ -300,7 +300,7 @@ body {
 
     .logo-coracao {
     position: relative;
-    top: 0.5rem; /* Valores negativos movem para cima */
+    top: -0.5rem; /* Valores negativos movem para cima */
     }
     .divider {
         margin: 12px auto 20px;
