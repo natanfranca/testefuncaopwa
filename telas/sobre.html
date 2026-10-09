@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="manifest" href="../manifest.webmanifest">
-	<link rel="apple-touch-icon" href="../telas/img/pwa-icon-192.png">
+    <link rel="apple-touch-icon" href="img/pwa-icon-192.png">
     <meta name="theme-color" content="#2e008b">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -12,34 +12,38 @@
     <meta name="apple-mobile-web-app-title" content="Cuidado Puro">
 
     <title>Cuidado Puro Home Health - Sobre Nós</title>
-    <link rel="stylesheet" href="../css/sobre.css">
-    <link rel="stylesheet" href="../css/style.css">
 
-	<script src="../js/pwa.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/sobre.css">
 </head>
 <body>
 
     <header class="navbar">
-       <div class="logo">
-			<a href="../index.html"><img src="img/logo_(2).png" alt="Logo"></a>
-			<a href="../index.html" class="logo-text">Cuidado Puro</a>
-		</div>
+        <div class="logo">
+            <a href="../index.html" class="logo-link">
+                <img src="img/logo_(2).png" class="logo-coracao" alt="Logo">
+                <span class="logo-text">Cuidado Puro</span>
+            </a>
+        </div>
 
-		<nav>
-			<ul class="nav-links">
-				<li><a href="../index.html">Início</a></li>
-                <li><a href="sobre.html" style="color: #67c2b8;" >Sobre</a></li>
+        <nav>
+            <ul class="nav-links">
+                <li><a href="../index.html">Início</a></li>
+                <li><a href="sobre.html" style="color: #67c2b8;">Sobre</a></li>
                 <li><a href="beneficios.html">Benefícios</a></li>
                 <li><a href="opinioes.html">Opiniões</a></li>
                 <li><a href="contato.html">Contato</a></li>
-			</ul>
-		</nav>
+            </ul>
+        </nav>
 
-		<a href="telaLogin.html" class="btn-login">Entrar</a>
-
+        <div class="nav-actions">
+            <a href="telaLogin.html" class="btn-login">Entrar</a>
+            <button class="btn-menu" id="btn-menu" aria-label="Abrir menu de navegação">☰</button>
+        </div>
     </header>
 
-    <div class="container">
+    <main class="container">
         
         <div class="about-hero">
             <h1>Sobre o Nosso Aplicativo</h1>
@@ -102,7 +106,12 @@
             </div>
         </div>
 
-    </div>
+    </main>
 
     <footer>
         &copy; 2026 Cuidado Puro
+    </footer>
+
+    <script src="../js/pwa.js"></script>
+</body>
+</html>
