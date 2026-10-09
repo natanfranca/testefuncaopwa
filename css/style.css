@@ -191,7 +191,7 @@ body {
 
 .hero-philosophy {
     flex: 1;
-    max-width: 520px;
+    max-width: 690px;
     background: rgba(13, 25, 54, 0.45);
     padding: 2rem;
     border-radius: 20px;
@@ -200,7 +200,7 @@ body {
 }
 
 .philosophy-tag {
-    font-size: 1rem;
+    font-size: 2rem;
     text-transform: uppercase;
     letter-spacing: 2px;
     color: var(--primary-color);
@@ -209,7 +209,7 @@ body {
 }
 
 .philosophy-text {
-    font-size: clamp(1rem, 2.5vw, 1.25rem);
+    font-size: clamp(1rem, 2.5vw, 1.5rem);
     line-height: 1.5;
     color: rgba(255, 255, 255, 0.95);
     font-weight: 300;
