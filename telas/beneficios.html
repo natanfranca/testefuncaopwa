@@ -9,49 +9,49 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
     <meta name="apple-mobile-web-app-title" content="Cuidado Puro">
-    <link rel="apple-touch-icon" href="../telas/img/pwa-icon-192.png">
+    <link rel="apple-touch-icon" href="img/pwa-icon-192.png">
 
     <title>Benefícios - Plataforma de Cuidado e Suporte à Saúde</title>
-    <link rel="stylesheet" href="../css/beneficios.css">
-    <link rel="stylesheet" href="../css/style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
 
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/beneficios.css">
 </head>
 <body>
 
     <header class="navbar">
-
         <div class="logo">
-            <a href="../index.html"><img src="./img/logo_(2).png" alt="Logo"></a>
-              <a href="../index.html" class="logo-text">Cuidado Puro</a>
+            <a href="../index.html" class="logo-link">
+                <img src="img/logo_(2).png" class="logo-coracao" alt="Logo">
+                <span class="logo-text">Cuidado Puro</span>
+            </a>
         </div>
-    
-    
+
         <nav>
             <ul class="nav-links">
                 <li><a href="../index.html">Início</a></li>
                 <li><a href="sobre.html">Sobre</a></li>
-                <li><a href="beneficios.html" style="color: #67c2b8;" >Benefícios</a></li>
+                <li><a href="beneficios.html" style="color: #67c2b8;">Benefícios</a></li>
                 <li><a href="opinioes.html">Opiniões</a></li>
                 <li><a href="contato.html">Contato</a></li>
             </ul>
         </nav>
-    
-        <a href="telaLogin.html" class="btn-login" class="button">Entrar</a>
-    
+
+        <div class="nav-actions">
+            <a href="telaLogin.html" class="btn-login">Entrar</a>
+            <button class="btn-menu" id="btn-menu" aria-label="Abrir menu de navegação">☰</button>
+        </div>
     </header>
 
-    <header class="hero-section">
+    <section class="hero-section">
         <div class="container">
             <span class="tag">Por que nos escolher?</span>
             <h1>Benefícios projetados para o bem-estar e a segurança de quem você ama</h1>
             <p class="subtitle">Nossa plataforma une tecnologia e cuidado humanizado para oferecer o melhor suporte a pessoas com necessidades especiais e seus cuidadores.</p>
         </div>
-    </header>
+    </section>
 
-    
     <main class="benefits-section">
-        <section class="cards-grid">
         <div class="container grid-benefits">
             
             <div class="benefit-card">
@@ -61,14 +61,12 @@
                 <span class="keyword">#SegurançaDoPaciente</span>
             </div>
 
-            <article class="card">
             <div class="benefit-card">
-                <div class="icon-wrapper">🛡️</div>
+                <div class="icon-wrapper">🤝</div>
                 <h3>Cuidado Humanizado e Personalizado</h3>
                 <p>Planos de suporte adaptados às necessidades específicas de cada indivíduo, respeitando a sua rotina, autonomia e dignidade.</p>
                 <span class="keyword">#AtendimentoInclusivo</span>
             </div>
-            </article>
 
             <div class="benefit-card">
                 <div class="icon-wrapper">👨‍⚕️</div>
@@ -99,13 +97,11 @@
             </div>
 
         </div>
-        
-    </section>
+    </main>
 
     <footer>
         &copy; 2026 Cuidado Puro Home Health. Conectando tecnologia, vidas e corações com responsabilidade.
     </footer>
-</main>
 
     <script src="../js/pwa.js"></script>
 </body>
