@@ -286,8 +286,8 @@ body {
         flex-direction: column;
         justify-content: flex-start;
         text-align: center;
-        padding: 30px 20px 40px;
-        gap: 15px; /* Reduz o espaço na área marcada em amarelo */
+        padding: 20px 20px 20px;
+        gap: 5px; /* Reduz o espaço na área marcada em amarelo */
     }
 
     .hero-content {
@@ -298,6 +298,10 @@ body {
         margin-bottom: 12px;
     }
 
+    .logo-coracao {
+    position: relative;
+    top: 0.5rem; /* Valores negativos movem para cima */
+    }
     .divider {
         margin: 12px auto 20px;
     }
