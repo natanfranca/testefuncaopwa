@@ -214,3 +214,26 @@ footer {
     font-size: 0.85rem;
     border-top: 1px solid rgba(255, 255, 255, 0.05);
 }
+
+/* --- AJUSTES PARA DISPOSITIVOS MÓVEIS (CELULAR) --- */
+@media (max-width: 768px) {
+    /* 1. Garante que o conteúdo comece bem abaixo do menu fixo */
+    .contact-container {
+        padding-top: 140px !important; /* Espaço suficiente para não cortar o título */
+    }
+
+    /* 2. Força o título a ter espaço superior limpo */
+    .contact-hero {
+        margin-top: 10px;
+    }
+}
+
+/* 3. Remove a linha branca/borda debaixo da logo e da navbar */
+.navbar,
+.navbar .logo,
+.navbar .logo-link,
+.navbar .logo-text {
+    border-bottom: none !important;
+    text-decoration: none !important;
+    box-shadow: none !important;
+}
