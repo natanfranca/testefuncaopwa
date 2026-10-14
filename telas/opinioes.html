@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="manifest" href="../manifest.webmanifest">
     <link rel="apple-touch-icon" href="../telas/img/pwa-icon-192.png">
-   
+
     <meta name="theme-color" content="#2e008b">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -14,7 +14,7 @@
 
     <title>Opiniões - Cuidado Puro Home Health</title>
 
-    <!-- Fonte Poppins -->
+    <!-- Fonte Poppins Unificada -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     
     <link rel="stylesheet" href="../css/style.css">
@@ -31,7 +31,7 @@
         </div>
 
         <nav>
-            <ul class="nav-links" id="nav-links">
+            <ul class="nav-links">
                 <li><a href="../index.html">Início</a></li>
                 <li><a href="sobre.html">Sobre</a></li>
                 <li><a href="beneficios.html">Benefícios</a></li>
@@ -152,26 +152,5 @@
     </footer>
 
     <script src="../js/pwa.js"></script>
-
-    <!-- SCRIPT DE FUNCIONALIDADE DO MENU HAMBÚRGUER -->
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            const btnMenu = document.getElementById('btn-menu');
-            const navLinks = document.getElementById('nav-links');
-
-            if (btnMenu && navLinks) {
-                btnMenu.addEventListener('click', function () {
-                    navLinks.classList.toggle('active');
-                    
-                    // Alterna o ícone entre '☰' e '✕'
-                    if (navLinks.classList.contains('active')) {
-                        btnMenu.textContent = '✕';
-                    } else {
-                        btnMenu.textContent = '☰';
-                    }
-                });
-            }
-        });
-    </script>
 </body>
 </html>
