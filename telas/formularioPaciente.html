@@ -14,11 +14,12 @@
 
     <title>Questionário de Saúde - Cuidado Puro</title>
     
-    <!-- Fonte Poppins Unificada -->
+    <!-- Fonte Poppins -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     
+    <!-- Chamada dos estilos (formularioPaciente.css por último para manter o fundo e cards translúcidos) -->
     <link rel="stylesheet" href="../css/style.css">
-<link rel="stylesheet" href="../css/formularioPaciente.css">
+    <link rel="stylesheet" href="../css/formularioPaciente.css">
 </head>
 
 <body>
@@ -47,7 +48,8 @@
         </div>
     </header>
 
-    <main class="form-container">
+    <!-- Adicionado padding-top inline para impedir que a navbar cubra o formulário -->
+    <main class="form-container" style="padding-top: 130px;">
 
         <div class="form-header">
             <h1>Formulário do Paciente</h1>
@@ -183,7 +185,6 @@
         </div>
     </main>
 
-    <!-- Scripts com caminhos relativos para evitar Erro 404 no GitHub Pages -->
     <script src="../js/config.js"></script>
     <script src="../js/formularioPaciente.js"></script>
     <script src="../js/pwa.js"></script>
