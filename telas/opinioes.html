@@ -13,6 +13,10 @@
     <meta name="apple-mobile-web-app-title" content="Cuidado Puro">
 
     <title>Opiniões - Cuidado Puro Home Health</title>
+    
+    <!-- Fonte Poppins igual ao sobre.html e contato.html -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
     <link rel="stylesheet" href="../css/style.css">
     <link rel="stylesheet" href="../css/opinioes.css">
 </head>
@@ -20,8 +24,10 @@
 
     <header class="navbar">
         <div class="logo">
-            <a href="../index.html"><img src="img/logo_(2).png" alt="Logo"></a>
-            <a href="../index.html" class="logo-text">Cuidado Puro</a>
+            <a href="../index.html" class="logo-link">
+                <img src="img/logo_(2).png" class="logo-coracao" alt="Logo">
+                <span class="logo-text">Cuidado Puro</span>
+            </a>
         </div>
 
         <nav>
@@ -34,7 +40,10 @@
             </ul>
         </nav>
 
-        <a href="telaLogin.html" class="btn-login">Entrar</a>
+        <div class="nav-actions">
+            <a href="telaLogin.html" class="btn-login">Entrar</a>
+            <button class="btn-menu" id="btn-menu" aria-label="Abrir menu de navegação">☰</button>
+        </div>
     </header>
 
     <main class="opiniones-container">
@@ -63,9 +72,9 @@
             </div>
         </section>
 
-        <section class="testimonials-grid" class="cards-grid">
+        <section class="testimonials-grid">
 
-            <article class="testimonial-card" class="card">
+            <article class="testimonial-card">
                 <span class="card-tag">Familiar de Paciente</span>
                 <p class="testimonial-text">
                     "O Cuidado Puro devolveu a paz para a nossa casa. Conseguir acompanhar os sinais vitais e o relatório diário da minha mãe pelo monitoramento em tempo real me dá uma tranquilidade que dinheiro nenhum paga. O suporte 24/7 é impecável."
@@ -121,7 +130,7 @@
                 </div>
             </article>
 
-            <article class="testimonial-card" class="card">
+            <article class="testimonial-card">
                 <span class="card-tag">Paciente</span>
                 <p class="testimonial-text">
                     "O Cuidado Puro foi muito bom para mim! Tive problemas de saúde e precisava urgentemente de um apoio e esse App meu ajudou muito! Recomendo o App."
