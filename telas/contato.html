@@ -12,16 +12,21 @@
     <link rel="apple-touch-icon" href="../telas/img/pwa-icon-192.png">
 
     <title>Contato - Cuidado Puro Home Health</title>
+    
+    <!-- Fonte Unificada: Poppins (A mesma do sobre.html) -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
     <link rel="stylesheet" href="../css/style.css">
     <link rel="stylesheet" href="../css/contato.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
 
     <header class="navbar">
         <div class="logo">
-            <a href="../index.html"><img src="img/logo_(2).png" alt="Logo"></a>
-            <a href="../index.html" class="logo-text">Cuidado Puro</a>
+            <a href="../index.html" class="logo-link">
+                <img src="img/logo_(2).png" class="logo-coracao" alt="Logo">
+                <span class="logo-text">Cuidado Puro</span>
+            </a>
         </div>
 
         <nav>
@@ -34,10 +39,13 @@
             </ul>
         </nav>
 
-        <a href="telaLogin.html" class="btn-login">Entrar</a>
+        <div class="nav-actions">
+            <a href="telaLogin.html" class="btn-login">Entrar</a>
+            <button class="btn-menu" id="btn-menu" aria-label="Abrir menu de navegação">☰</button>
+        </div>
     </header>
 
-    <main class="contact-container">
+    <main class="contact-container" style="padding-top: 2rem;">
 
         <!-- Hero Section / Cabeçalho da Página -->
         <section class="contact-hero">
@@ -64,7 +72,7 @@
 
                     <div class="info-card">
                         <div class="icon">📞</div>
-                        <div class="info-details">
+                        <div class="icon-details">
                             <h3>Telefone</h3>
                             <p class="highlight">(44) 99999-9999</p>
                             <p class="subtext">Atendimento e suporte aos usuários.</p>
